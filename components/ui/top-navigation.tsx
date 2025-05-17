@@ -1,24 +1,18 @@
-import Link from "next/link";
-import { Button } from "./button";
-
+import { useRole } from "@/utils/context/roleContext";
+import { UserIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 const TopNavigation = () => {
+  const { profile } = useRole();
   return (
-    <nav className="flex relative  justify-between items-center p-2 dark: bg-[#190e0a]">
-      <div className="flex justify-between items-center px-4 py-2">
-        <Link
-          href="/dashboard"
-          className="bg-gradient-to-b from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-lg"
-        >
-          XELORA
-        </Link>
-      </div>
-
-      <div>
-        <Link href="/contact">
-          <Button variant="outline" className="rounded-sm text-xs p-2">
-            Contact my sponsor!
-          </Button>
-        </Link>
+    <nav className="flex absolute top-0 left-0 w-full justify-between items-center p-2 bg-transparent">
+      <div className="flex justify-between items-center px-4 py-2 gap-2">
+        <Avatar>
+          <AvatarImage src={profile?.user_profile_picture ?? ""} />
+          <AvatarFallback>
+            <UserIcon className="w-4 h-4" />
+          </AvatarFallback>
+        </Avatar>
+        <p className="text-white text-sm font-bold">{profile?.user_username}</p>
       </div>
     </nav>
   );
