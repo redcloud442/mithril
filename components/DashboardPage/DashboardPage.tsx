@@ -85,22 +85,40 @@ const DashboardPage = ({ packages }: Props) => {
   };
 
   return (
-    <div className="relative min-h-screen h-full flex items-start justify-center">
-      <div className="w-full max-w-6xl flex justify-between min-h-screen h-full">
+    <div className="relative min-h-screen h-full flex items-start justify-start md:justify-center ">
+      <div className="w-full max-w-6xl flex justify-between h-[100vh] sm:min-h-screen sm:h-full">
         {/* Left Column */}
-        <div className="flex flex-col justify-around space-y-6">
-          <Link href="/deposit" className="translate-x-[140px]">
-            <Button size="lg" variant="outline" className="px-6 text-2xl">
+        <div className="flex flex-col justify-center md:justify-around gap-y-22 p-2">
+          <Link
+            href="/deposit"
+            className="translate-x-[30px] md:translate-x-[140px]"
+          >
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-sm px-4 sm:px-6 sm:text-2xl"
+            >
               DEPOSIT
             </Button>
           </Link>
           <Link href="/referrals">
-            <Button size="lg" variant="outline" className="px-6 text-2xl">
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-sm px-4 sm:px-6 sm:text-2xl"
+            >
               REFERRALS
             </Button>
           </Link>
-          <Link href="/settings" className="translate-x-[140px]">
-            <Button size="lg" variant="outline" className="px-6 text-2xl">
+          <Link
+            href="/settings"
+            className="translate-x-[30px] md:translate-x-[140px]"
+          >
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-sm px-4 sm:px-6 sm:text-2xl"
+            >
               SETTINGS
             </Button>
           </Link>
@@ -126,23 +144,44 @@ const DashboardPage = ({ packages }: Props) => {
           alt="Aurora Background"
           width={1980}
           height={1080}
-          className="absolute top-0 left-0 w-full h-full object-cover sm:object-none z-50 border-2 border-red-500"
+          className="absolute top-0 left-0 w-full h-full object-contain md:object-none z-50 border-2 border-red-500"
           priority
         />
 
-        <div className="flex flex-col justify-around space-y-6">
-          <Link href="/withdraw" className="translate-x-[-140px]">
-            <Button size="lg" variant="outline" className="px-6 text-2xl">
+        <div className="flex flex-col justify-center md:justify-around gap-y-22">
+          <Link
+            href="/withdraw"
+            className="translate-x-[-10px] md:translate-x-[-140px]"
+          >
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-sm px-4 sm:px-6 sm:text-2xl"
+            >
               WITHDRAW
             </Button>
           </Link>
-          <Link href="/packages">
-            <Button size="lg" variant="outline" className="px-6 text-2xl">
-              BUY PACKAGE
+          <Link
+            href="/packages"
+            className="translate-x-[60px] md:translate-x-[0px]"
+          >
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-sm px-4 sm:px-6 sm:text-2xl"
+            >
+              PACKAGE
             </Button>
           </Link>
-          <Link href="/transactions" className="translate-x-[-140px]">
-            <Button size="lg" variant="outline" className="px-6 text-2xl">
+          <Link
+            href="/transactions"
+            className="translate-x-[-30px] md:translate-x-[-140px]"
+          >
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-sm px-4 sm:px-6 sm:text-2xl"
+            >
               TRANSACTIONS
             </Button>
           </Link>
