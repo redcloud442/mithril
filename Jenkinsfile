@@ -5,7 +5,7 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
-  serviceAccountName: default
+  serviceAccountName: devops-jenkins
   containers:
     - name: kubectl
       image: lachlanevenson/k8s-kubectl:v1.25.4
