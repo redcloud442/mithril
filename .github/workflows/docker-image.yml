@@ -44,3 +44,7 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/redcloud442/mithril:prod
+
+      - name: Trigger KubeSphere Deploy Pipeline via Webhook
+        run: |
+          curl -X POST "https://kubesphere.omnixglobal.io/kapis/devops.kubesphere.io/v1alpha2/webhook?url=https%3A%2F%2Fgithub.com%2Fredcloud442%2Fmithril.git"
