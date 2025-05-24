@@ -9,6 +9,18 @@ pipeline {
   }
 
   stages {
+    stage('Verify Tools') {
+      steps {
+        script {
+          try {
+            sh 'which kubectl || { echo "kubectl not found"; exit 1; }'
+          } catch (Exception e) {
+            error("❌ kubectl is not installed on this agent. Please use an agent with kubectl installed.")
+          }
+        }
+      }
+    }
+
     stage('Deploy to Kubernetes') {
       steps {
         sh '''
