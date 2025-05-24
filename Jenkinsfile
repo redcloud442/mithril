@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      label 'kubectl-agent'
+      inheritFrom 'default'  // Instead of label
       yaml """
 apiVersion: v1
 kind: Pod
@@ -9,19 +9,18 @@ metadata:
   labels:
     jenkins: agent
 spec:
-  serviceAccountName: devops-jenkins
+  serviceAccountName: jenkins-agent  # Updated service account
   containers:
-    - name: kubectl
-      image: lachlanevenson/k8s-kubectl:v1.25.4
-      command:
-        - cat
-      tty: true
-    - name: jnlp
-      image: jenkins/inbound-agent:latest
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ['sleep']
+    args: ['infinity']
+  - name: jnlp
+    image: jenkins/inbound-agent:latest
 """
     }
   }
-
+  
   environment {
     IMAGE = "ghcr.io/redcloud442/mithril:prod"
     K8S_NAMESPACE = "mithril"
