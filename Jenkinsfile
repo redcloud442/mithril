@@ -16,23 +16,19 @@ pipeline {
   stages {
     stage('Deploy to Kubernetes') {
       steps {
-        script {
-          withKubeConfig([
-            credentialsId: 'kubeconfig-prod',
-            serverUrl: 'https://10.233.0.1:443',
-            clusterName: 'local',
-            contextName: 'admin@local',
-            namespace: "${env.K8S_NAMESPACE}"
-          ]) {
-            sh '''
-              echo "✅ Using kubeconfig and updating deployment..."
-              kubectl set image deployment/$DEPLOYMENT_NAME \
-                $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
+        withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_FILE')]) {
+          sh '''
+            mkdir -p ~/.kube
+            cp "$KUBECONFIG_FILE" ~/.kube/config
+            chmod 600 ~/.kube/config
 
-              echo "⏳ Waiting for rollout to complete..."
-              kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
-            '''
-          }
+            echo "✅ Using kubeconfig and updating deployment..."
+            kubectl set image deployment/$DEPLOYMENT_NAME \
+              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
+
+            echo "⏳ Waiting for rollout to complete..."
+            kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+          '''
         }
       }
     }
