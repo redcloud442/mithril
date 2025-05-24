@@ -27,7 +27,7 @@ pipeline {
         echo "🔁 Verifying deployment exchange/health..."
         sh '''
           # Example health check (adjust the URL as needed)
-          curl --fail http://your-service-address/health || exit 1
+          curl --fail http://mithril-fe.mithril.svc.cluster.local/health || exit 1
         '''
       }
     }
