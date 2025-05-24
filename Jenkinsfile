@@ -3,23 +3,23 @@ pipeline {
   environment {
     IMAGE = "ghcr.io/redcloud442/mithril:prod"
     K8S_NAMESPACE = "mithril"
-    DEPLOYMENT_NAME = "mithril-deployment"
-    CONTAINER_NAME = "mithril-container"
+    DEPLOYMENT_NAME = "mithril-fe"
+    CONTAINER_NAME = "container-ptsloy"
   }
 
   options {
-    timeout(time: 10, unit: 'MINUTES') // Prevent hanging builds
-    disableConcurrentBuilds() // Prevent overlapping deploys
+    timeout(time: 10, unit: 'MINUTES')
+    disableConcurrentBuilds()
   }
 
   stages {
 
     stage('Verify KubeConfig') {
       steps {
-        withCredentials([string(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_CONTENT')]) {
+        withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_PATH')]) {
           sh '''
             mkdir -p ~/.kube
-            echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+            cp "$KUBECONFIG_PATH" ~/.kube/config
             kubectl version --client
             kubectl get nodes
           '''
@@ -29,10 +29,10 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-        withCredentials([string(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_CONTENT')]) {
+        withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_PATH')]) {
           sh '''
             mkdir -p ~/.kube
-            echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+            cp "$KUBECONFIG_PATH" ~/.kube/config
 
             echo "Updating image to $IMAGE..."
             kubectl set image deployment/$DEPLOYMENT_NAME \
@@ -55,7 +55,7 @@ pipeline {
       echo '❌ Deployment failed. Investigate logs.'
     }
     always {
-      cleanWs() // optional: clean workspace
+      cleanWs()
     }
   }
 }
