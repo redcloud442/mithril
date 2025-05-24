@@ -1,5 +1,20 @@
 pipeline {
-  agent any
+  agent {
+    kubernetes {
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  serviceAccountName: default
+  containers:
+    - name: kubectl
+      image: lachlanevenson/k8s-kubectl:v1.25.4
+      command:
+        - cat
+      tty: true
+"""
+    }
+  }
 
   environment {
     IMAGE = "ghcr.io/redcloud442/mithril:prod"
@@ -40,7 +55,6 @@ pipeline {
         container('kubectl') {
           echo "🔁 Verifying deployment health..."
           sh '''
-            # You can adjust this health check URL to your service's endpoint
             curl --fail http://mithril-fe.mithril.svc.cluster.local/health || exit 1
           '''
         }
@@ -60,4 +74,3 @@ pipeline {
     }
   }
 }
-
