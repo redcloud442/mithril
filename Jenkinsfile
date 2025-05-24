@@ -19,10 +19,10 @@ pipeline {
         script {
           withKubeConfig([
             credentialsId: 'kubeconfig-prod',
-            serverUrl: 'https://kubernetes.omnixglobal.io',
-            contextName: 'admin@local',
+            serverUrl: 'https://10.233.0.1:443',
             clusterName: 'local',
-            namespace: "${K8S_NAMESPACE}"
+            contextName: 'admin@local',
+            namespace: "${env.K8S_NAMESPACE}"
           ]) {
             sh '''
               echo "✅ Using kubeconfig and updating deployment..."
