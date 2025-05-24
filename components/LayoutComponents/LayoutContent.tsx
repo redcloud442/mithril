@@ -131,14 +131,14 @@ export default function LayoutContent({ children }: LayoutContentProps) {
           <div className="pb-24 p-4 relative grow">
             <div className="absolute inset-0 -z-10">
               <Image
-                src="/assets/bg/xeloraBg.webp"
-                alt="Xelora Background"
+                src="/assets/bg/omnixBg.webp"
+                alt="Omnix Global Background"
                 width={1980}
                 height={1080}
                 className="absolute top-0 left-0 w-full h-full object-cover z-0"
                 priority
                 placeholder="blur"
-                blurDataURL="/assets/bg/xeloraBg-small.webp"
+                blurDataURL="/assets/bg/omnixBg-small.webp"
               />
 
               <div className="absolute inset-0 bg-black opacity-40" />
@@ -200,14 +200,14 @@ export default function LayoutContent({ children }: LayoutContentProps) {
           <div className="pb-24 p-4 relative z-50 grow">
             <div className="absolute inset-0 -z-10">
               <Image
-                src="/assets/bg/xeloraBg.webp"
-                alt="Xelora Background"
+                src="/assets/bg/omnixBg.webp"
+                alt="Omnix Global Background"
                 width={1980}
                 height={1080}
                 className="absolute top-0 left-0 w-full h-full object-cover z-0"
                 priority
                 placeholder="blur"
-                blurDataURL="/assets/bg/xeloraBg-small.webp"
+                blurDataURL="/assets/bg/omnixBg-small.webp"
               />
 
               <div className="absolute inset-0 bg-black opacity-40" />

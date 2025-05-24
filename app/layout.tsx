@@ -4,19 +4,19 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Xelora",
-  description: "Step into Xelora — Your path to digital prosperity.",
+  title: "Omnix Global",
+  description: "Step into Omnix Global — Your path to digital prosperity.",
   openGraph: {
-    title: "Xelora",
-    description: "Step into Xelora — Your path to digital prosperity.",
-    url: "https://xelora.io",
-    siteName: "Xelora",
+    title: "Omnix Global",
+    description: "Step into Omnix Global — Your path to digital prosperity.",
+    url: "https://www.omnixglobal.io",
+    siteName: "Omnix Global",
     images: [
       {
-        url: "https://xelora.io/assets/icons/logo.ico",
+        url: "https://www.omnixglobal.io/assets/icons/logo.ico",
         width: 1200,
         height: 630,
-        alt: "Xelora Banner",
+        alt: "Omnix Global Banner",
       },
     ],
     type: "website",

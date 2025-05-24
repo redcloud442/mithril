@@ -10,30 +10,30 @@ export async function generateMetadata({
   const { CODE } = await searchParams;
 
   return {
-    title: "Xelora | Register and Begin Your Journey",
+    title: "Omnix Global | Register and Begin Your Journey",
     description:
-      "Join Xelora now — your path to digital prosperity begins here!",
+      "Join Omnix Global now — your path to digital prosperity begins here!",
     openGraph: {
-      url: `https://xelora.io/access/register?CODE=${CODE}`,
-      title: `Join Xelora Now! Invited by ${CODE}`,
+      url: `https://www.omnixglobal.io/access/register?CODE=${CODE}`,
+      title: `Join Omnix Global Now! Invited by ${CODE}`,
       description:
-        "Unlock exclusive rewards and opportunities by joining Xelora today.",
-      siteName: "xelora.io",
+        "Unlock exclusive rewards and opportunities by joining Omnix Global today.",
+      siteName: "omnixglobal.io",
       images: [
         {
-          url: "https://xelora.io/assets/icons/logo.ico",
+          url: "https://www.omnixglobal.io/assets/icons/logo.ico",
           width: 1200,
           height: 630,
-          alt: "Xelora Registration Banner",
+          alt: "Omnix Global Registration Banner",
         },
       ],
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `Join Xeloria Now! Invited by ${CODE}`,
-      description: "Be part of the Xeloria revolution — register today.",
-      images: ["https://xelora.io/assets/icons/logo.ico"], // Same or different from OG
+      title: `Join Omnix Global Now! Invited by ${CODE}`,
+      description: "Be part of the Omnix Global revolution — register today.",
+      images: ["https://www.omnixglobal.io/assets/icons/logo.ico"], // Same or different from OG
     },
   };
 }

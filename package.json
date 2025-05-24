@@ -1,9 +1,9 @@
 {
-  "name": "xelora-frontend",
+  "name": "omnixglobal-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "doppler run -- next dev --turbopack",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "db": "bun prisma db push && bun prisma generate",

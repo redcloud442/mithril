@@ -1,10 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import UserProfilePageUser from "@/components/UserProfilePage/UserProfilePageUser";
-import prisma from "@/utils/prisma";
-import { createClientServerSide } from "@/utils/supabase/server";
-import { UserRequestdata } from "@/utils/types";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -15,39 +12,25 @@ export const metadata: Metadata = {
   },
 };
 
-const Page = async () => {
-  const supabase = await createClientServerSide();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/access/signin");
-  }
-
-  const userData = await prisma.user_table.findUnique({
-    where: {
-      user_id: user.id,
-    },
-    include: {
-      company_member_table: {
-        include: {
-          dashboard_earnings_summary: true,
-        },
-      },
+const handleFetchUser = async () => {
+  const user = await fetch(`${process.env.API_URL}/api/v1/user`, {
+    method: "GET",
+    headers: {
+      cookie: (await cookies()).toString(),
     },
   });
 
-  if (!userData) {
-    redirect("/500");
+  if (!user.ok) {
+    throw new Error("Failed to fetch user");
   }
 
-  const combinedData = {
-    ...userData,
-    ...userData.company_member_table[0],
-    ...(userData.company_member_table[0]?.dashboard_earnings_summary?.[0] ||
-      {}),
-  } as unknown as UserRequestdata;
+  const data = await user.json();
+
+  return data;
+};
+
+const Page = async () => {
+  const { userProfile } = await handleFetchUser();
 
   return (
     <Suspense
@@ -59,7 +42,7 @@ const Page = async () => {
         </>
       }
     >
-      <UserProfilePageUser userProfile={combinedData} />
+      <UserProfilePageUser userProfile={userProfile} />
     </Suspense>
   );
 };

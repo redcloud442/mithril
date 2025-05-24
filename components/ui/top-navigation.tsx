@@ -9,7 +9,7 @@ const TopNavigation = () => {
           href="/dashboard"
           className="bg-gradient-to-b from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-lg"
         >
-          XELORA
+          OMNIX GLOBAL
         </Link>
       </div>
 

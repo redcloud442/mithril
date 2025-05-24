@@ -1,57 +1,35 @@
 // app/withdraw/page.tsx
 import { Skeleton } from "@/components/ui/skeleton";
 import WithdrawPage from "@/components/WithdrawPage/WithdrawPage";
-import { getPhilippinesTime } from "@/utils/function";
-import prisma from "@/utils/prisma";
-import { createClientServerSide } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
+const handleFetchWithdrawal = async () => {
+  const withdrawal = await fetch(
+    `${process.env.API_URL}/api/v1/withdraw/user`,
+    {
+      method: "GET",
+      headers: {
+        cookie: (await cookies()).toString(),
+      },
+    }
+  );
+
+  if (!withdrawal.ok) {
+    throw new Error("Failed to fetch withdrawal");
+  }
+
+  const data = await withdrawal.json();
+
+  return data;
+};
+
 const Page = async () => {
-  const supabase = await createClientServerSide();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { packageWithdrawal, referralWithdrawal } =
+    await handleFetchWithdrawal();
 
-  if (!user) {
-    redirect("/access/login");
-  }
-
-  const companyMemberId = user.user_metadata?.CompanyMemberId;
-  if (!companyMemberId) {
-    redirect("/access/login"); // Fallback if ID missing
-  }
-
-  const now = new Date();
-  const todayStart = getPhilippinesTime(now, "start");
-  const todayEnd = getPhilippinesTime(now, "end");
-
-  const [packageWithdrawal, referralWithdrawal] = await Promise.all([
-    prisma.company_withdrawal_request_table.findFirst({
-      where: {
-        company_withdrawal_request_member_id: companyMemberId,
-        company_withdrawal_request_status: { in: ["PENDING", "APPROVED"] },
-        company_withdrawal_request_withdraw_type: "PACKAGE",
-        company_withdrawal_request_date: {
-          gte: todayStart,
-          lte: todayEnd,
-        },
-      },
-    }),
-    prisma.company_withdrawal_request_table.findFirst({
-      where: {
-        company_withdrawal_request_member_id: companyMemberId,
-        company_withdrawal_request_status: { in: ["PENDING", "APPROVED"] },
-        company_withdrawal_request_withdraw_type: "REFERRAL",
-        company_withdrawal_request_date: {
-          gte: todayStart,
-          lte: todayEnd,
-        },
-      },
-    }),
-  ]);
-
-  if (packageWithdrawal && referralWithdrawal) {
+  if (packageWithdrawal || referralWithdrawal) {
     redirect("/dashboard");
   }
 

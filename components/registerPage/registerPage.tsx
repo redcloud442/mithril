@@ -182,7 +182,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
   };
 
   return (
-    <ReusableCard title="Register to XELORA!" className="p-0">
+    <ReusableCard title="Register to OMNIX GLOBAL!" className="p-0">
       <Form {...form}>
         <form
           className="space-y-4 w-full z-40"

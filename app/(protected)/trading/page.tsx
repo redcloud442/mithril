@@ -1,13 +1,31 @@
-export const revalidate = 60; // revalidate this page every 60 seconds
-
 import PackagePage from "@/components/PackagePage/PackagePage";
 import { Skeleton } from "@/components/ui/skeleton";
-import prisma from "@/utils/prisma";
+import { cookies } from "next/headers";
 import { Suspense } from "react";
-const page = async () => {
-  const packages = await prisma.package_table.findMany({
-    where: { package_is_disabled: false },
+
+const handleFetchPackages = async () => {
+  const packages = await fetch(`${process.env.API_URL}/api/v1/package`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      cookie: (await cookies()).toString(),
+    },
+    next: {
+      revalidate: 60,
+    },
   });
+
+  if (!packages.ok) {
+    throw new Error("Failed to fetch packages");
+  }
+
+  const { data } = await packages.json();
+
+  return data;
+};
+
+const page = async () => {
+  const packages = await handleFetchPackages();
 
   return (
     <Suspense

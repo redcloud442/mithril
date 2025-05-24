@@ -1,32 +1,28 @@
 import DepositPage from "@/components/DepositPage/DepositPage";
-import prisma from "@/utils/prisma";
-import { createClientServerSide } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const page = async () => {
-  const supabase = await createClientServerSide();
+const handleFetchDeposit = async () => {
+  const deposit = await fetch(`${process.env.API_URL}/api/v1/deposit/user`, {
+    method: "GET",
+    headers: {
+      cookie: (await cookies()).toString(),
+    },
+  });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/access/login");
+  if (!deposit.ok) {
+    throw new Error("Failed to fetch deposit");
   }
 
-  const existingDeposit =
-    !!(await prisma.company_deposit_request_table.findFirst({
-      where: {
-        company_deposit_request_member_id: user.user_metadata.CompanyMemberId,
-        company_deposit_request_status: "PENDING",
-      },
-      take: 1,
-      orderBy: {
-        company_deposit_request_date: "desc",
-      },
-    }));
+  const data = await deposit.json();
 
-  if (existingDeposit) {
+  return data;
+};
+
+const page = async () => {
+  const { canUserDeposit } = await handleFetchDeposit();
+
+  if (canUserDeposit) {
     redirect("/dashboard");
   }
 

@@ -12,5 +12,5 @@ export const metadata: Metadata = {
 const Page = async () => {
   return <AdminLeaderBoardsPage />;
 };
-
+ 
 export default Page;

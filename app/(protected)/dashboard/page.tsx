@@ -2,26 +2,34 @@
 
 import DashboardPage from "@/components/DashboardPage/DashboardPage";
 import { Skeleton } from "@/components/ui/skeleton";
-import prisma from "@/utils/prisma";
+import { cookies } from "next/headers";
 import { Suspense } from "react";
 
-const Page = async () => {
-  const packages = await prisma.package_table.findMany({
-    where: { package_is_disabled: false },
-    select: {
-      package_id: true,
-      package_name: true,
-      package_percentage: true,
-      packages_days: true,
-      package_description: true,
-      package_gif: true,
-      package_is_disabled: true,
-      package_image: true,
+const handleFetchPackages = async () => {
+  const packages = await fetch(`${process.env.API_URL}/api/v1/package`, {
+    method: "GET",
+    headers: {
+      cookie: (await cookies()).toString(),
+    },
+    next: {
+      revalidate: 60,
     },
   });
 
+  if (!packages.ok) {
+    throw new Error("Failed to fetch packages");
+  }
+
+  const { data } = await packages.json();
+
+  return data;
+};
+
+const Page = async () => {
+  const packages = await handleFetchPackages();
+
   return (
-    <Suspense fallback={<Skeleton className="h-full w-full" />}>
+    <Suspense fallback={<Skeleton className="min-h-screen w-full" />}>
       <DashboardPage packages={packages} />
     </Suspense>
   );
