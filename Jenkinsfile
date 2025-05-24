@@ -11,36 +11,39 @@ pipeline {
   stages {
     stage('Verify Tools') {
       steps {
-        script {
-          try {
-            sh 'which kubectl || { echo "kubectl not found"; exit 1; }'
-          } catch (Exception e) {
-            error("❌ kubectl is not installed on this agent. Please use an agent with kubectl installed.")
-          }
+        container('kubectl') {
+          sh '''
+            echo "✅ Checking if kubectl is available..."
+            kubectl version --client
+          '''
         }
       }
     }
 
     stage('Deploy to Kubernetes') {
       steps {
-        sh '''
-          echo "✅ Using default kubeconfig and updating deployment..."
-          kubectl set image deployment/$DEPLOYMENT_NAME \
-            $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
+        container('kubectl') {
+          sh '''
+            echo "✅ Updating deployment..."
+            kubectl set image deployment/$DEPLOYMENT_NAME \
+              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
 
-          echo "⏳ Waiting for rollout to complete..."
-          kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
-        '''
+            echo "⏳ Waiting for rollout to complete..."
+            kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+          '''
+        }
       }
     }
 
     stage('Exchange') {
       steps {
-        echo "🔁 Verifying deployment exchange/health..."
-        sh '''
-          # Example health check (adjust the URL as needed)
-          curl --fail http://mithril-fe.mithril.svc.cluster.local/health || exit 1
-        '''
+        container('kubectl') {
+          echo "🔁 Verifying deployment health..."
+          sh '''
+            # You can adjust this health check URL to your service's endpoint
+            curl --fail http://mithril-fe.mithril.svc.cluster.local/health || exit 1
+          '''
+        }
       }
     }
   }
@@ -57,3 +60,4 @@ pipeline {
     }
   }
 }
+
