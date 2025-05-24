@@ -110,8 +110,6 @@ const LoginPage = () => {
           className="flex flex-col justify-center gap-6 w-full max-w-xs mx-auto z-50"
           onSubmit={handleSubmit(handleSignIn)}
         >
-          {" "}
-          test
           <FormField
             control={control}
             name="userName"
@@ -130,6 +128,7 @@ const LoginPage = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={control}
             name="password"
@@ -148,6 +147,7 @@ const LoginPage = () => {
               </FormItem>
             )}
           />
+
           {/* <div className="w-full flex items-center justify-center">
             <Turnstile
               size="flexible"
@@ -157,6 +157,7 @@ const LoginPage = () => {
               }}
             />
           </div> */}
+
           <div className="w-full flex justify-center">
             <Button
               variant="card"
