@@ -15,28 +15,23 @@ pipeline {
 
   stages {
 
-    stage('Verify KubeConfig') {
-      steps {
-        withKubeConfig([credentialsId: 'kubeconfig-prod']) {
-          sh '''
-            kubectl version --client
-            kubectl get nodes
-          '''
-        }
-      }
-    }
-
     stage('Deploy to Kubernetes') {
       steps {
-        withKubeConfig([credentialsId: 'kubeconfig-prod']) {
-          sh '''
-            echo "Updating image to $IMAGE..."
-            kubectl set image deployment/$DEPLOYMENT_NAME \
-              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
+        script {
+          kubeconfig(credentialsId: 'kubeconfig-prod') {
+            sh '''
+              echo "✅ Verifying connection to the cluster..."
+              kubectl version --client
+              kubectl get nodes
 
-            echo "Waiting for rollout to complete..."
-            kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
-          '''
+              echo "🚀 Updating image to $IMAGE..."
+              kubectl set image deployment/$DEPLOYMENT_NAME \
+                $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
+
+              echo "⌛ Waiting for rollout to complete..."
+              kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+            '''
+          }
         }
       }
     }
