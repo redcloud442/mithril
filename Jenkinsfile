@@ -1,5 +1,6 @@
 pipeline {
   agent any
+
   environment {
     IMAGE = "ghcr.io/redcloud442/mithril:prod"
     K8S_NAMESPACE = "mithril"
@@ -16,10 +17,8 @@ pipeline {
 
     stage('Verify KubeConfig') {
       steps {
-        withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_PATH')]) {
+        withKubeConfig([credentialsId: 'kubeconfig-prod']) {
           sh '''
-            mkdir -p ~/.kube
-            cp "$KUBECONFIG_PATH" ~/.kube/config
             kubectl version --client
             kubectl get nodes
           '''
@@ -29,11 +28,8 @@ pipeline {
 
     stage('Deploy to Kubernetes') {
       steps {
-        withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_PATH')]) {
+        withKubeConfig([credentialsId: 'kubeconfig-prod']) {
           sh '''
-            mkdir -p ~/.kube
-            cp "$KUBECONFIG_PATH" ~/.kube/config
-
             echo "Updating image to $IMAGE..."
             kubectl set image deployment/$DEPLOYMENT_NAME \
               $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
