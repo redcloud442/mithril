@@ -46,19 +46,24 @@ spec:
       }
     }
 
-    stage('Deploy') {
-      options {
-        timeout(time: 10, unit: 'MINUTES')
-      }
-      steps {
-        container('kubectl') {
-         sh '''
-            echo '✔️ Shell is working'
-            which sh
-            kubectl version --client
-            kubectl rollout restart deployment ${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE}
-          '''
-        }
+  stage('Deploy') {
+    options {
+      timeout(time: 10, unit: 'MINUTES')
+    }
+    steps {
+      container('kubectl') {
+        sh '''
+          echo "✔️ Shell is working"
+          which sh
+          kubectl version --client
+
+          echo "✅ Updating deployment image..."
+          kubectl set image deployment/${DEPLOYMENT_NAME} \
+            ${CONTAINER_NAME}=${IMAGE} -n ${K8S_NAMESPACE}
+
+          echo "⏳ Waiting for rollout to complete..."
+          kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE}
+        '''
       }
     }
   }
