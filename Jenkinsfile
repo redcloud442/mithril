@@ -52,14 +52,11 @@ spec:
       }
       steps {
         container('kubectl') {
-          sh '''
-            kubectl set image deployment/$DEPLOYMENT_NAME \
-              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE \
-              --request-timeout=30s
-
-            kubectl rollout status deployment/$DEPLOYMENT_NAME \
-              -n $K8S_NAMESPACE \
-              --timeout=300s
+         sh '''
+            echo '✔️ Shell is working'
+            which sh
+            kubectl version --client
+            kubectl rollout restart deployment ${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE}
           '''
         }
       }
