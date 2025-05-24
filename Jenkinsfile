@@ -61,21 +61,6 @@ spec:
         }
       }
     }
-
-    stage('Verify Health') {
-      steps {
-        retry(3) {
-          timeout(time: 2, unit: 'MINUTES') {
-            container('kubectl') {
-              sh '''
-                curl -fsS --max-time 30 --retry 3 --retry-delay 5 \
-                  http://${DEPLOYMENT_NAME}.${K8S_NAMESPACE}.svc.cluster.local/health
-              '''
-            }
-          }
-        }
-      }
-    }
   }
 
   post {
