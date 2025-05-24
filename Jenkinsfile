@@ -1,9 +1,13 @@
 pipeline {
   agent {
     kubernetes {
+      label 'kubectl-agent'  // <-- Add this required label
       yaml """
 apiVersion: v1
 kind: Pod
+metadata:
+  labels:
+    jenkins: agent
 spec:
   serviceAccountName: devops-jenkins
   containers:
