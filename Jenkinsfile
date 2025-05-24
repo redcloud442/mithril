@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      label 'kubectl-agent'  // <-- Add this required label
+      label 'kubectl-agent'
       yaml """
 apiVersion: v1
 kind: Pod
@@ -16,6 +16,8 @@ spec:
       command:
         - cat
       tty: true
+    - name: jnlp
+      image: jenkins/inbound-agent:latest
 """
     }
   }
@@ -67,14 +69,18 @@ spec:
   }
 
   post {
+    always {
+      script {
+        node('kubectl-agent') {  // Wrapping cleanWs in a node block
+          cleanWs()
+        }
+      }
+    }
     success {
       echo '✅ Deployment succeeded!'
     }
     failure {
       echo '❌ Deployment failed. Check logs.'
-    }
-    always {
-      cleanWs()
     }
   }
 }
