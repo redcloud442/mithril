@@ -30,7 +30,7 @@ spec:
     K8S_NAMESPACE = "mithril"
     DEPLOYMENT_NAME = "mithril-fe"
     CONTAINER_NAME = "container-ptsloy"
-    KUBECONFIG = "/tmp/kubeconfig"  // Remove the # comment here
+    KUBECONFIG = "/tmp/kubeconfig"
   }
 
   stages {
@@ -38,7 +38,7 @@ spec:
       steps {
         container('kubectl') {
           sh '''
-            # Cache kubeconfig (comments are allowed inside shell blocks)
+            # Cache kubeconfig
             kubectl config view --raw > $KUBECONFIG
             chmod 600 $KUBECONFIG
           '''
@@ -46,24 +46,25 @@ spec:
       }
     }
 
-  stage('Deploy') {
-    options {
-      timeout(time: 10, unit: 'MINUTES')
-    }
-    steps {
-      container('kubectl') {
-        sh '''
-          echo "✔️ Shell is working"
-          which sh
-          kubectl version --client
+    stage('Deploy') {
+      options {
+        timeout(time: 10, unit: 'MINUTES')
+      }
+      steps {
+        container('kubectl') {
+          sh '''
+            echo "✔️ Shell is working"
+            which sh
+            kubectl version --client
 
-          echo "✅ Updating deployment image..."
-          kubectl set image deployment/${DEPLOYMENT_NAME} \
-            ${CONTAINER_NAME}=${IMAGE} -n ${K8S_NAMESPACE}
+            echo "✅ Updating deployment image..."
+            kubectl set image deployment/${DEPLOYMENT_NAME} \
+              ${CONTAINER_NAME}=${IMAGE} -n ${K8S_NAMESPACE}
 
-          echo "⏳ Waiting for rollout to complete..."
-          kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE}
-        '''
+            echo "⏳ Waiting for rollout to complete..."
+            kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE}
+          '''
+        }
       }
     }
   }
