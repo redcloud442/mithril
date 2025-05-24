@@ -14,28 +14,20 @@ pipeline {
   }
 
   stages {
-
     stage('Deploy to Kubernetes') {
       steps {
-        script {
-          kubeconfig(credentialsId: 'kubeconfig-prod') {
-            sh '''
-              echo "✅ Verifying connection to the cluster..."
-              kubectl version --client
-              kubectl get nodes
+        withKubeConfig(credentialsId: 'kubeconfig-prod', namespace: "${K8S_NAMESPACE}") {
+          sh '''
+            echo "✅ Using kubeconfig and updating deployment..."
+            kubectl set image deployment/$DEPLOYMENT_NAME \
+              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
 
-              echo "🚀 Updating image to $IMAGE..."
-              kubectl set image deployment/$DEPLOYMENT_NAME \
-                $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
-
-              echo "⌛ Waiting for rollout to complete..."
-              kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
-            '''
-          }
+            echo "⏳ Waiting for rollout to complete..."
+            kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+          '''
         }
       }
     }
-
   }
 
   post {
@@ -43,7 +35,7 @@ pipeline {
       echo '✅ Deployment succeeded!'
     }
     failure {
-      echo '❌ Deployment failed. Investigate logs.'
+      echo '❌ Deployment failed. Check logs.'
     }
     always {
       cleanWs()
