@@ -1,14 +1,3 @@
-properties([
-  pipelineTriggers([
-    genericTrigger(
-      causeString: '🔁 Triggered by generic webhook',
-      token: 'mithril-deploy-token',
-      printContributedVariables: true,
-      printPostContent: true
-    )
-  ])
-])
-
 pipeline {
   agent {
     kubernetes {
