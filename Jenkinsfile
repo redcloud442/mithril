@@ -70,9 +70,7 @@ spec:
       echo '❌ Deployment failed. Check logs.'
     }
     always {
-      node {
-        cleanWs()
-      }
+      cleanWs()
     }
   }
 }
