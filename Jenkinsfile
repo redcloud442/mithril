@@ -1,85 +1,102 @@
 pipeline {
   agent {
     kubernetes {
-      inheritFrom 'default'  // Instead of label
-      yaml """
+      inheritFrom 'default'  // Uses predefined pod template
+      yaml '''
 apiVersion: v1
 kind: Pod
 metadata:
   labels:
     jenkins: agent
 spec:
-  serviceAccountName: jenkins-agent  # Updated service account
+  serviceAccountName: jenkins-agent  # Pre-configured SA with permissions
   containers:
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: alpine/k8s:1.25.4  # Lightweight kubectl image
     command: ['sleep']
     args: ['infinity']
   - name: jnlp
     image: jenkins/inbound-agent:latest
-"""
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+'''
     }
   }
-  
+
   environment {
     IMAGE = "ghcr.io/redcloud442/mithril:prod"
     K8S_NAMESPACE = "mithril"
     DEPLOYMENT_NAME = "mithril-fe"
     CONTAINER_NAME = "container-ptsloy"
+    KUBECONFIG = "/tmp/kubeconfig"  # Cached config location
   }
 
   stages {
-    stage('Verify Tools') {
+    stage('Initialize') {
       steps {
         container('kubectl') {
           sh '''
-            echo "✅ Checking if kubectl is available..."
-            kubectl version --client
+            # Cache kubeconfig for faster subsequent calls
+            kubectl config view --raw > $KUBECONFIG
+            chmod 600 $KUBECONFIG
           '''
         }
       }
     }
 
-    stage('Deploy to Kubernetes') {
+    stage('Deploy') {
+      options {
+        timeout(time: 10, unit: 'MINUTES')  # Fail if stage exceeds 10 mins
+      }
       steps {
         container('kubectl') {
           sh '''
-            echo "✅ Updating deployment..."
+            # Set image with timeout
             kubectl set image deployment/$DEPLOYMENT_NAME \
-              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
+              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE \
+              --request-timeout=30s
 
-            echo "⏳ Waiting for rollout to complete..."
-            kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+            # Monitor rollout with progress checks
+            kubectl rollout status deployment/$DEPLOYMENT_NAME \
+              -n $K8S_NAMESPACE \
+              --timeout=300s
           '''
         }
       }
     }
 
-    stage('Exchange') {
+    stage('Verify Health') {
       steps {
-        container('kubectl') {
-          echo "🔁 Verifying deployment health..."
-          sh '''
-            curl --fail http://mithril-fe.mithril.svc.cluster.local/health || exit 1
-          '''
+        retry(3) {  // Auto-retry up to 3 times
+          timeout(time: 2, unit: 'MINUTES') {
+            container('kubectl') {
+              sh '''
+                # Fast health check with retry logic
+                curl -fsS --max-time 30 --retry 3 --retry-delay 5 \
+                  http://${DEPLOYMENT_NAME}.${K8S_NAMESPACE}.svc.cluster.local/health
+              '''
+            }
+          }
         }
       }
     }
   }
 
   post {
-    always {
-      script {
-        node('kubectl-agent') {  // Wrapping cleanWs in a node block
-          cleanWs()
-        }
-      }
-    }
     success {
       echo '✅ Deployment succeeded!'
+      slackSend(color: 'good', message: "Deployed ${DEPLOYMENT_NAME} successfully")
     }
     failure {
       echo '❌ Deployment failed. Check logs.'
+      slackSend(color: 'danger', message: "Failed deploying ${DEPLOYMENT_NAME}")
+    }
+    cleanup {
+      container('jnlp') {
+        cleanWs()  // Workspace cleanup
+      }
     }
   }
 }
