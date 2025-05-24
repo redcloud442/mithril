@@ -8,27 +8,20 @@ pipeline {
     CONTAINER_NAME = "container-ptsloy"
   }
 
-  options {
-    timeout(time: 10, unit: 'MINUTES')
-    disableConcurrentBuilds()
-  }
-
   stages {
     stage('Deploy to Kubernetes') {
       steps {
-        withCredentials([file(credentialsId: 'kubeconfig-prod', variable: 'KUBECONFIG_FILE')]) {
-          sh '''
-            mkdir -p ~/.kube
-            cp "$KUBECONFIG_FILE" ~/.kube/config
-            chmod 600 ~/.kube/config
+        script {
+          withKubeConfig([credentialsId: 'kubeconfig-prod']) {
+            sh '''
+              echo "✅ Using kubeconfig and updating deployment..."
+              kubectl set image deployment/$DEPLOYMENT_NAME \
+                $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
 
-            echo "✅ Using kubeconfig and updating deployment..."
-            kubectl set image deployment/$DEPLOYMENT_NAME \
-              $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
-
-            echo "⏳ Waiting for rollout to complete..."
-            kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
-          '''
+              echo "⏳ Waiting for rollout to complete..."
+              kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+            '''
+          }
         }
       }
     }
