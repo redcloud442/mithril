@@ -11,18 +11,24 @@ pipeline {
   stages {
     stage('Deploy to Kubernetes') {
       steps {
-        script {
-          withKubeConfig([credentialsId: 'kubeconfig-prod']) {
-            sh '''
-              echo "✅ Using kubeconfig and updating deployment..."
-              kubectl set image deployment/$DEPLOYMENT_NAME \
-                $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
+        sh '''
+          echo "✅ Using default kubeconfig and updating deployment..."
+          kubectl set image deployment/$DEPLOYMENT_NAME \
+            $CONTAINER_NAME=$IMAGE -n $K8S_NAMESPACE
 
-              echo "⏳ Waiting for rollout to complete..."
-              kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
-            '''
-          }
-        }
+          echo "⏳ Waiting for rollout to complete..."
+          kubectl rollout status deployment/$DEPLOYMENT_NAME -n $K8S_NAMESPACE
+        '''
+      }
+    }
+
+    stage('Exchange') {
+      steps {
+        echo "🔁 Verifying deployment exchange/health..."
+        sh '''
+          # Example health check (adjust the URL as needed)
+          curl --fail http://your-service-address/health || exit 1
+        '''
       }
     }
   }
