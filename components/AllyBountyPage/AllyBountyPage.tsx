@@ -1,4 +1,3 @@
-"use client";
 import { Separator } from "../ui/separator";
 import AllyBountyTable from "./AllyBountyTable";
 

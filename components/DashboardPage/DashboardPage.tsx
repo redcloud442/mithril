@@ -207,7 +207,9 @@ const DashboardPage = ({ packages }: Props) => {
                   width={60}
                   height={60}
                 />
-                <p className="text-[12px] sm:text-lg font-bold mt-2">TRADING</p>
+                <p className="text-[12px] sm:text-lg text-center font-bold mt-2">
+                  TRADING OPTIONS
+                </p>
               </Link>
             </ReusableCardBg>
 

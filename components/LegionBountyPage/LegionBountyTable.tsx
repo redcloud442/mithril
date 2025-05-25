@@ -4,6 +4,7 @@ import { getLegionBounty } from "@/services/Bounty/Member";
 import { useIndirectReferralStore } from "@/store/useIndirrectReferralStore";
 import { useRole } from "@/utils/context/roleContext";
 import { escapeFormData } from "@/utils/function";
+import { LegionRequestData } from "@/utils/types";
 import {
   ColumnFiltersState,
   getCoreRowModel,
@@ -13,9 +14,11 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { RefreshCcw } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReusableTable from "../ReusableTable/ReusableTable";
+import { Button } from "../ui/button";
 import { LegionBountyColumn } from "./LegionBountyColumn";
 
 type FilterFormValues = {
@@ -29,7 +32,7 @@ const LegionBountyTable = () => {
   const [rowSelection, setRowSelection] = useState({});
   const [activePage, setActivePage] = useState(1);
   const [isFetchingList, setIsFetchingList] = useState(false);
-
+  const [refreshCooldown, setRefreshCooldown] = useState(0);
   const { teamMemberProfile } = useRole();
 
   const { indirectReferral, setIndirectReferral } = useIndirectReferralStore();
@@ -38,21 +41,28 @@ const LegionBountyTable = () => {
   const isAscendingSort =
     sorting?.[0]?.desc === undefined ? true : !sorting[0].desc;
 
+  const cachedIndirectReferral = useRef<{
+    [key: string]: {
+      data: LegionRequestData[];
+      totalCount: number;
+    };
+  }>({});
+
   const fetchAdminRequest = async () => {
     try {
       if (!teamMemberProfile) return;
 
-      const now = Date.now();
-      const SIXTY_SECONDS = 60 * 1000;
+      setIsFetchingList(true);
 
-      // Skip if data was fetched less than 60 seconds ago
-      if (
-        indirectReferral.lastFetchedAt &&
-        now - indirectReferral.lastFetchedAt < SIXTY_SECONDS
-      ) {
+      const cacheKey = `${activePage}`;
+      if (cachedIndirectReferral.current[cacheKey]) {
+        const cachedData = cachedIndirectReferral.current[cacheKey];
+        setIndirectReferral({
+          data: cachedData.data,
+          count: cachedData.totalCount,
+        });
         return;
       }
-      setIsFetchingList(true);
 
       const sanitizedData = escapeFormData(getValues());
 
@@ -71,6 +81,11 @@ const LegionBountyTable = () => {
         data: data || [],
         count: totalCount || 0,
       });
+
+      cachedIndirectReferral.current[cacheKey] = {
+        data: data || [],
+        totalCount: totalCount || 0,
+      };
     } catch (e) {
     } finally {
       setIsFetchingList(false);
@@ -107,18 +122,57 @@ const LegionBountyTable = () => {
     fetchAdminRequest();
   }, [activePage, sorting, teamMemberProfile]);
 
+  const handleRefresh = () => {
+    cachedIndirectReferral.current = {};
+    setIsFetchingList(true);
+    setRefreshCooldown(60);
+    fetchAdminRequest();
+  };
+
   const pageCount = Math.ceil(indirectReferral.count / 10);
 
+  useEffect(() => {
+    if (refreshCooldown === 0) return;
+
+    const interval = setInterval(() => {
+      setRefreshCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000); // decrease every second
+
+    return () => clearInterval(interval);
+  }, [refreshCooldown]);
+
   return (
-    <ReusableTable
-      table={table}
-      columns={columns}
-      activePage={activePage}
-      totalCount={indirectReferral.count}
-      isFetchingList={isFetchingList}
-      setActivePage={setActivePage}
-      pageCount={pageCount}
-    />
+    <>
+      <div className="flex items-center justify-between mb-4">
+        <Button
+          onClick={handleRefresh}
+          variant="outline"
+          disabled={isFetchingList || refreshCooldown > 0}
+          className="gap-2"
+        >
+          <RefreshCcw className="w-4 h-4" />
+          {refreshCooldown > 0
+            ? `Wait ${refreshCooldown}s to refresh`
+            : "Refresh"}
+        </Button>
+      </div>
+
+      <ReusableTable
+        table={table}
+        columns={columns}
+        activePage={activePage}
+        totalCount={indirectReferral.count}
+        isFetchingList={isFetchingList}
+        setActivePage={setActivePage}
+        pageCount={pageCount}
+      />
+    </>
   );
 };
 

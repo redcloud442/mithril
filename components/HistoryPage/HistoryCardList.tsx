@@ -1,21 +1,25 @@
 import { formateMonthDateYearv2, formatNumberLocale } from "@/utils/function";
 import { company_transaction_table } from "@prisma/client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   data: company_transaction_table[];
-  count: number;
+  activePage: number;
+  setActivePage: Dispatch<SetStateAction<number>>;
+  pageCount: number;
   isLoading?: boolean;
-  onLoadMore?: () => void;
   currentStatus: string;
 };
 
 const HistoryCardList = ({
   data,
-  count,
+  activePage,
+  setActivePage,
+  pageCount,
   isLoading = false,
-  onLoadMore,
   currentStatus,
 }: Props) => {
   if (isLoading && data.length === 0) {
@@ -89,17 +93,87 @@ const HistoryCardList = ({
         </tbody>
       </table>
 
-      {count > data.length && (
-        <div className="p-4 text-center">
+      <div className="flex items-center justify-end gap-x-4 py-4 px-4">
+        {activePage > 1 && (
           <Button
-            onClick={onLoadMore}
-            disabled={isLoading}
-            className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2 rounded-full"
+            variant="ghost"
+            size="sm"
+            onClick={() => setActivePage((prev) => Math.max(prev - 1, 1))}
+            className="bg-orange-950 text-white hover:bg-orange-600 transition-all duration-200 rounded-lg shadow-md"
           >
-            {isLoading ? "Loading..." : "Load More"}
+            <ChevronLeft className="h-4 w-4" />
           </Button>
+        )}
+
+        <div className="flex space-x-2">
+          {(() => {
+            const maxVisiblePages = 3;
+            const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
+            let displayedPages = [];
+
+            if (pageCount <= maxVisiblePages) {
+              displayedPages = pages;
+            } else {
+              if (activePage <= 2) {
+                displayedPages = [1, 2, 3, "...", pageCount];
+              } else if (activePage >= pageCount - 1) {
+                displayedPages = [
+                  1,
+                  "...",
+                  pageCount - 2,
+                  pageCount - 1,
+                  pageCount,
+                ];
+              } else {
+                displayedPages = [
+                  activePage - 1,
+                  activePage,
+                  activePage + 1,
+                  "...",
+                  pageCount,
+                ];
+              }
+            }
+
+            return displayedPages.map((page, index) =>
+              typeof page === "number" ? (
+                <Button
+                  key={page}
+                  onClick={() => setActivePage(page)}
+                  size="sm"
+                  className={`${
+                    activePage === page
+                      ? "bg-orange-500 text-zinc-900 font-bold shadow-md"
+                      : "border border-zinc-700 text-zinc-300 hover:bg-orange-500 hover:text-white bg-zinc-900"
+                  } rounded-lg px-3 py-2 transition-all duration-200`}
+                >
+                  {page}
+                </Button>
+              ) : (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 py-1 text-zinc-600 dark:text-zinc-400"
+                >
+                  {page}
+                </span>
+              )
+            );
+          })()}
         </div>
-      )}
+
+        {activePage < pageCount && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              setActivePage((prev) => Math.min(prev + 1, pageCount))
+            }
+            className="bg-orange-500 text-white hover:bg-orange-600 transition-all duration-200 rounded-lg shadow-md"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

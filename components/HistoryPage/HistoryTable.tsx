@@ -5,6 +5,7 @@ import { getTransactionHistory } from "@/services/Transaction/Transaction";
 import { useRole } from "@/utils/context/roleContext";
 import { createClientSide } from "@/utils/supabase/client";
 import { TransactionHistoryData } from "@/utils/types";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReusableCard from "../ui/card-reusable";
@@ -17,6 +18,9 @@ type FilterFormValues = {
 
 const HistoryTable = () => {
   const supabaseClient = createClientSide();
+  const queryParams = useSearchParams();
+  const transaction = queryParams.get("transaction");
+
   const { teamMemberProfile } = useRole();
 
   const [requestData, setRequestData] = useState<TransactionHistoryData | null>(
@@ -87,10 +91,11 @@ const HistoryTable = () => {
   useEffect(() => {
     if (!teamMemberProfile) return;
     fetchRequest(currentStatusRef.current);
-  }, []);
+  }, [activePage]);
 
   const handleTabChange = async (type?: string) => {
     const statusType = type as "EARNINGS" | "WITHDRAWAL" | "DEPOSIT";
+    window.history.pushState({}, "", `/history?transaction=${statusType}`);
     setValue("statusFilter", statusType);
     currentStatusRef.current = statusType;
 
@@ -100,16 +105,17 @@ const HistoryTable = () => {
     await fetchRequest(statusType);
   };
 
-  const handleLoadMore = async (
-    statusType: "EARNINGS" | "WITHDRAWAL" | "DEPOSIT"
-  ) => {
-    setActivePage((prev) => prev + 1);
-    await fetchRequest(statusType);
-  };
+  const pageCount = Math.ceil(
+    (requestData?.data?.[currentStatusRef.current]?.count || 0) / 10
+  );
+
+  const defaultTab = transaction
+    ? (transaction as "EARNINGS" | "WITHDRAWAL" | "DEPOSIT")
+    : "EARNINGS";
 
   return (
     <ReusableCard type="user" title="Transaction History" className="p-0">
-      <Tabs defaultValue="EARNINGS" onValueChange={handleTabChange}>
+      <Tabs defaultValue={defaultTab} onValueChange={handleTabChange}>
         <TabsList className="mb-4">
           <TabsTrigger value="EARNINGS">Earnings</TabsTrigger>
           <TabsTrigger value="WITHDRAWAL">Withdrawal</TabsTrigger>
@@ -119,9 +125,10 @@ const HistoryTable = () => {
         <TabsContent value="EARNINGS">
           <HistoryCardList
             data={requestData?.data?.["EARNINGS"]?.data || []}
-            count={requestData?.data?.["EARNINGS"]?.count || 0}
+            activePage={activePage}
+            setActivePage={setActivePage}
+            pageCount={pageCount}
             isLoading={isFetchingList}
-            onLoadMore={() => handleLoadMore(currentStatusRef.current)}
             currentStatus={currentStatusRef.current}
           />
         </TabsContent>
@@ -129,8 +136,9 @@ const HistoryTable = () => {
         <TabsContent value="WITHDRAWAL">
           <HistoryCardList
             data={requestData?.data?.["WITHDRAWAL"]?.data || []}
-            count={requestData?.data?.["WITHDRAWAL"]?.count || 0}
-            onLoadMore={() => handleLoadMore(currentStatusRef.current)}
+            activePage={activePage}
+            setActivePage={setActivePage}
+            pageCount={pageCount}
             isLoading={isFetchingList}
             currentStatus={currentStatusRef.current}
           />
@@ -139,9 +147,10 @@ const HistoryTable = () => {
         <TabsContent value="DEPOSIT">
           <HistoryCardList
             data={requestData?.data?.["DEPOSIT"]?.data || []}
-            count={requestData?.data?.["DEPOSIT"]?.count || 0}
+            activePage={activePage}
+            setActivePage={setActivePage}
+            pageCount={pageCount}
             isLoading={isFetchingList}
-            onLoadMore={() => handleLoadMore(currentStatusRef.current)}
             currentStatus={currentStatusRef.current}
           />
         </TabsContent>

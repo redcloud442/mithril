@@ -27,10 +27,12 @@ import { escapeFormData, formatNumberLocale } from "@/utils/function";
 import { withdrawalFormSchema, WithdrawalFormValues } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 const DashboardWithdrawModalWithdraw = () => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const { earnings: earningsState, setEarnings } = useUserEarningsStore();
   const { teamMemberProfile } = useRole();
@@ -189,11 +191,14 @@ const DashboardWithdrawModalWithdraw = () => {
 
       toast({
         title: "Withdrawal Request Successfully",
-        description: "Please wait for it to be approved",
+        description:
+          "Please wait for it to be approved. You will be redirected to the history page.",
       });
 
       reset();
       setOpen(false);
+
+      router.push("/history?transaction=WITHDRAWAL");
     } catch (e) {
       if (e instanceof Error) {
         toast({

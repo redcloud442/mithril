@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { package_table } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
@@ -40,6 +41,8 @@ type Props = {
 };
 
 const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
+  const router = useRouter();
+
   const { teamMemberProfile, setTeamMemberProfile } = useRole();
   const { toast } = useToast();
   const { earnings, setEarnings } = useUserEarningsStore();
@@ -95,11 +98,6 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
           packageId: selectedPackage?.package_id || "",
         },
         teamMemberId: teamMemberProfile?.company_member_id || "",
-      });
-
-      toast({
-        title: "Enrolled Package",
-        description: "You have successfully enrolled in a package",
       });
 
       reset({ amount: "", packageId: selectedPackage?.package_id || "" });
@@ -159,6 +157,15 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
           company_member_is_active: false,
         }));
       }
+
+      toast({
+        title: "Trading Package Purchased",
+        description: "You will be redirected to the dashboard shortly",
+      });
+
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
 
       setOpen(false);
     } catch (e) {
@@ -220,7 +227,7 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
                 control={control}
                 name="amount"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="relative">
                     <FormLabel className="font-bold text-center">
                       AMOUNT TO AVAIL:
                     </FormLabel>
@@ -268,6 +275,15 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
                         }}
                       />
                     </FormControl>
+                    <Button
+                      variant="card"
+                      className="absolute right-2 top-7 z-50 px-2"
+                      onClick={() => {
+                        field.onChange(maxAmount?.toString() || "");
+                      }}
+                    >
+                      Max
+                    </Button>
                     <FormMessage />
                   </FormItem>
                 )}

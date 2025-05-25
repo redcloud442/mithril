@@ -28,11 +28,13 @@ import { createClientSide } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { merchant_table } from "@prisma/client";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const DashboardDepositModalDeposit = () => {
   const supabaseClient = createClientSide();
+  const router = useRouter();
   const [topUpOptions, setTopUpOptions] = useState<merchant_table[]>([]);
   const { canUserDeposit, setCanUserDeposit } = useUserHaveAlreadyWithdraw();
 
@@ -112,12 +114,14 @@ const DashboardDepositModalDeposit = () => {
 
       toast({
         title: "Deposit Request Successfully",
-        description: "Please wait for your request to be approved.",
+        description:
+          "Please wait for your request to be approved. You will be redirected to the history page.",
       });
 
       reset();
 
       setCanUserDeposit(false);
+      router.push("/history?transaction=DEPOSIT");
     } catch (e) {
       if (e instanceof Error) {
         await logError(supabaseClient, {

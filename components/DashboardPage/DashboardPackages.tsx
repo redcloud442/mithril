@@ -170,39 +170,37 @@ const DashboardPackages = ({ teamMemberProfile }: DashboardPackagesProps) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
       {liveData.map((data) => (
         <ReusableCard
           key={data.package_connection_id}
           title={data.package}
           className="relative p-0"
         >
-          <div className="flex flex-col xl:flex-row items-center gap-6 p-4">
+          <div className="flex flex-col md:flex-row items-center gap-6 p-4">
             {/* Left: Small GIF */}
-            <div className="flex-shrink-0 flex justify-center">
-              <Image
-                src={data.package_gif || "/fallback.gif"}
-                alt={`${data.package} GIF`}
-                width={300}
-                height={300}
-                unoptimized
-                className="object-contain"
-              />
-            </div>
+            <Image
+              src={data.package_gif || "/fallback.gif"}
+              alt={`${data.package} GIF`}
+              width={300}
+              height={300}
+              unoptimized
+              className="w-full max-w-[100px] sm:max-w-[300px] h-auto object-contain"
+            />
 
             {/* Right: Full-size package image */}
-            <div className="flex-grow overflow-visible relative flex flex-col gap-2 z-50">
+            <div className="flex-grow w-full md:w-auto overflow-visible relative flex flex-col gap-4 z-50">
               <div className="relative w-full dark:bg-black rounded-full h-10 border border-yellow-500 shadow-inner overflow-hidden">
                 <div
                   className={cn(
                     "absolute top-0 left-0 h-full transition-all duration-300 bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-100 shadow-md",
                     data.currentPercentage >= 100
                       ? "rounded-full"
-                      : "rounded-l-full rounded-r-[6px]" // add slight right rounding for smoother visuals
+                      : "rounded-l-full rounded-r-[6px]"
                   )}
                   style={{
                     width: `${data.currentPercentage}%`,
-                    minWidth: "8px", // ensures rounded corners still appear at low %
+                    minWidth: "8px",
                   }}
                 ></div>
                 <span className="absolute inset-0 flex items-center justify-center font-extrabold text-white tracking-wide drop-shadow text-2xl">
@@ -210,8 +208,8 @@ const DashboardPackages = ({ teamMemberProfile }: DashboardPackagesProps) => {
                 </span>
               </div>
 
-              <ReusableCard className="space-y-2">
-                <div className="flex flex-col gap-3 text-sm stroke-text-orange uppercase">
+              <ReusableCard className="sm:space-y-2">
+                <div className="flex flex-col sm:gap-3 text-sm stroke-text-orange uppercase">
                   <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2">
                     <span className="font-semibold">Date Invested:</span>
                     <span className="text-white">
@@ -239,6 +237,7 @@ const DashboardPackages = ({ teamMemberProfile }: DashboardPackagesProps) => {
                     </span>
                   </div>
                 </div>
+
                 {data.is_ready_to_claim && (
                   <Dialog
                     open={openDialogId === data.package_connection_id}
@@ -252,7 +251,7 @@ const DashboardPackages = ({ teamMemberProfile }: DashboardPackagesProps) => {
                     <DialogTrigger asChild>
                       <Button
                         variant="card"
-                        className=" font-black text-2xl rounded-full p-5 w-full pt-"
+                        className="font-black text-2xl rounded-full p-5 w-full"
                         type="submit"
                       >
                         CLAIM

@@ -79,7 +79,7 @@ const DashboardTotalEarnings = ({ refresh }: DashboardTotalEarningsProps) => {
         {/* Network Income */}
         <ReusableCardBg className="p-2 text-center">
           <p className="text-[10px] w-full sm:text-lg font-black">
-            NETWORK INCOME
+            MATRIX INCOME
           </p>
           <div className="text-sm sm:text-lg font-bold">
             {refresh ? (

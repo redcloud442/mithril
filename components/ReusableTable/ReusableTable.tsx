@@ -168,7 +168,7 @@ const ReusableTable = <T extends object>({
                   className={`${
                     activePage === page
                       ? "bg-orange-500 text-zinc-900 font-bold shadow-md"
-                      : "border border-zinc-700 text-zinc-300 hover:bg-orange-500 hover:text-white"
+                      : "border border-zinc-700 text-zinc-300 hover:bg-orange-500 hover:text-white bg-zinc-900"
                   } rounded-lg px-3 py-2 transition-all duration-200`}
                 >
                   {page}
