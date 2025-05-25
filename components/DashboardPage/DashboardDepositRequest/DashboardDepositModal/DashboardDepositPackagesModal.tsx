@@ -25,6 +25,7 @@ const DashboardDepositModalPackages = ({ packages }: Props) => {
           packages={pkg}
           selectedPackage={selectedPackage}
           onClick={() => handlePackageSelect(pkg)}
+          setSelectedPackage={setSelectedPackage}
         />
       ))}
 
