@@ -64,8 +64,9 @@
 
 .stroke-text-orange {
   color: white;
-  -webkit-text-stroke: 1px #f97316; /* Tailwind's orange-500 */
-  text-stroke: 1px #f97316;
+  -webkit-text-stroke: 0.5px #f97316;
+  text-stroke: 4px #f97316;
+  letter-spacing: 0.07em;
 }
 
 @layer base {

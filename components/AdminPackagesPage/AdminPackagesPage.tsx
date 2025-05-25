@@ -20,7 +20,7 @@ const AdminPackageList = () => {
       if (!teamMemberProfile) return;
 
       const fetchedPackages = await getAdminPackages();
-      console.log(fetchedPackages);
+
       setPackages(fetchedPackages);
     } catch (e) {
       if (e instanceof Error) {
