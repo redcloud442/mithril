@@ -51,7 +51,7 @@ const DashboardReinvestPromoPackage = ({ packages: initialPackage }: Props) => {
         type="earnings"
         className={`sm:max-w-[425px] bg-orange-950 dark:bg-orange-950`}
       >
-        <ScrollArea className="h-[650px] sm:h-fit">
+        <ScrollArea className="h-[500px] sm:h-fit">
           <DialogHeader>
             <DialogTitle className="text-white">
               {selectedPackage
