@@ -38,9 +38,10 @@ spec:
       steps {
         container('kubectl') {
           sh '''
-            # Cache kubeconfig
+            echo "📁 Initializing KUBECONFIG"
             kubectl config view --raw > $KUBECONFIG
             chmod 600 $KUBECONFIG
+            export KUBECONFIG=$KUBECONFIG
           '''
         }
       }
@@ -55,14 +56,22 @@ spec:
           sh '''
             echo "✔️ Shell is working"
             which sh
+            export KUBECONFIG=$KUBECONFIG
             kubectl version --client
 
             echo "✅ Updating deployment image..."
             kubectl set image deployment/${DEPLOYMENT_NAME} \
-              ${CONTAINER_NAME}=${IMAGE} -n ${K8S_NAMESPACE}
+              ${CONTAINER_NAME}=${IMAGE} -n ${K8S_NAMESPACE} --record
 
             echo "⏳ Waiting for rollout to complete..."
             kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE}
+
+            echo "🔍 Verifying image update..."
+            kubectl get deployment ${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE} \
+              -o=jsonpath="{.spec.template.spec.containers[?(@.name==\"${CONTAINER_NAME}\")].image}"
+
+            echo "📦 Listing current pods..."
+            kubectl get pods -n ${K8S_NAMESPACE} -o wide
           '''
         }
       }
