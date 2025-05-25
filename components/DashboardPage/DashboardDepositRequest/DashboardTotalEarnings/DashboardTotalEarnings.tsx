@@ -12,7 +12,7 @@ const DashboardTotalEarnings = ({ refresh }: DashboardTotalEarningsProps) => {
   const { totalEarnings } = useUserDashboardEarningsStore();
   return (
     <ReusableCard type="user" className="p-0 space-y-4">
-      <div className="flex flex-row justify-between md:justify-between items-start md:items-center md:px-32 gap-4">
+      <div className="flex flex-row justify-between md:justify-between items-start md:items-center gap-4">
         <ReusableCardBg className="p-2 text-center">
           <p className="text-xs sm:text-2xl font-black">TOTAL INCOME</p>
 
@@ -42,9 +42,8 @@ const DashboardTotalEarnings = ({ refresh }: DashboardTotalEarningsProps) => {
           </div>
         </ReusableCardBg>
       </div>
-
-      <div className="flex flex-row sm:flex-row justify-evenly gap-3 sm:gap-8 sm:px-6">
-        {/* Package Income */}
+      <div className="flex flex-col sm:flex-row justify-evenly gap-3 sm:gap-8">
+        {/* Trading Income */}
         <ReusableCardBg className="p-2 text-center">
           <p className="text-[10px] w-full sm:text-lg font-black">
             TRADING INCOME
