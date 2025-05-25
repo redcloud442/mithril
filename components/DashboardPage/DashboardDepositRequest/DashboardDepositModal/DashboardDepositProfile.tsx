@@ -41,9 +41,7 @@ const DashboardDepositProfile = () => {
         throw new Error(`File upload failed: ${uploadError.message}`);
       }
 
-      const publicUrl =
-        "https://cmwfujabuwraxsgwuwpr.supabase.co/storage/v1/object/public/USER_PROFILE/" +
-        filePath;
+      const publicUrl = `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnixglobal.io"}/storage/v1/object/public/USER_PROFILE/${filePath}`;
 
       await updateUserProfile({
         userId: profile.user_id,

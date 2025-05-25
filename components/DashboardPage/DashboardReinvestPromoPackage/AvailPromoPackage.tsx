@@ -168,7 +168,15 @@ const AvailPromoPackage = ({ onClick, selectedPackage }: Props) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        if (!open) {
+          setOpen(false);
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           className="absolute right-10 sm:right-10 bottom-10 sm:bottom-10 z-50 text-xl sm:text-4xl p-4 sm:p-6 w-min sm:max-w-xs"
@@ -180,8 +188,8 @@ const AvailPromoPackage = ({ onClick, selectedPackage }: Props) => {
       </DialogTrigger>
       <DialogContent className="bg-orange-950 dark:bg-orange-950">
         <DialogHeader>
-          <DialogTitle className="text-center stroke-text-orange">
-            {selectedPackage?.package_name}
+          <DialogTitle className="text-center stroke-text-orange text-white">
+            {selectedPackage ? selectedPackage.package_name : "Select Package"}
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4 px-4 pb-4">

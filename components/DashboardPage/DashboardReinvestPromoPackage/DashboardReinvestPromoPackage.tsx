@@ -53,7 +53,11 @@ const DashboardReinvestPromoPackage = ({ packages: initialPackage }: Props) => {
       >
         <ScrollArea className="h-[650px] sm:h-fit">
           <DialogHeader>
-            <DialogTitle>{selectedPackage?.package_name}</DialogTitle>
+            <DialogTitle className="text-white">
+              {selectedPackage
+                ? selectedPackage.package_name
+                : "Select Package"}
+            </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col justify-between gap-4">
             {initialPackage.map((pkg) => (

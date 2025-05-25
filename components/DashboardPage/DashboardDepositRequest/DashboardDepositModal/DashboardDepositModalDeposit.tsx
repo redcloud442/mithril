@@ -103,7 +103,7 @@ const DashboardDepositModalDeposit = () => {
         throw new Error("File upload failed.");
       }
 
-      const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`;
+      const publicUrl = `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnixglobal.io"}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`;
 
       await handleDepositRequest({
         TopUpFormValues: sanitizedData,

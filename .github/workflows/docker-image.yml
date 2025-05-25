@@ -19,6 +19,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -32,10 +35,10 @@ jobs:
               --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} \
               --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} \
               --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
-              -t ghcr.io/redcloud442/mithril:prod .
+              -t ghcr.io/redcloud442/mithril:prod-${SHORT_SHA} .
 
       - name: Push Docker image
-        run: docker push ghcr.io/redcloud442/mithril:prod
+        run: docker push ghcr.io/redcloud442/mithril:prod-${SHORT_SHA}
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
@@ -54,9 +57,7 @@ jobs:
 
       - name: Confirm deployment and container name
         run: |
-
           kubectl get deployment -n mithril
-
           kubectl get deployment mithril-fe -n mithril -o jsonpath="{.spec.template.spec.containers[*].name}"
 
       - name: Check RBAC permissions
@@ -66,7 +67,7 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           echo "🚀 Updating image in deployment 'mithril-fe'..."
-          kubectl set image deployment/mithril-fe container-ptsloy=ghcr.io/redcloud442/mithril:prod -n mithril
+          kubectl set image deployment/mithril-fe container-ptsloy=ghcr.io/redcloud442/mithril:prod-${SHORT_SHA} -n mithril
 
           echo "⏳ Waiting for rollout to complete..."
           kubectl rollout status deployment/mithril-fe -n mithril

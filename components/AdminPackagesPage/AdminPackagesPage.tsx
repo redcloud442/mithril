@@ -14,16 +14,13 @@ const AdminPackageList = () => {
   const supabase = createClientSide();
   const { teamMemberProfile } = useRole();
   const [packages, setPackages] = useState<package_table[]>([]);
-  const [selectedPackage, setSelectedPackage] = useState<package_table | null>(
-    null
-  );
 
   const fetchPackages = async () => {
     try {
       if (!teamMemberProfile) return;
 
       const fetchedPackages = await getAdminPackages();
-
+      console.log(fetchedPackages);
       setPackages(fetchedPackages);
     } catch (e) {
       if (e instanceof Error) {
@@ -39,10 +36,6 @@ const AdminPackageList = () => {
   useEffect(() => {
     fetchPackages();
   }, [teamMemberProfile, supabase]);
-
-  const handleSelectPackage = (pkg: package_table) => {
-    setSelectedPackage(pkg);
-  };
 
   return (
     <div className="container mx-auto p- md:p-10 space-y-6 ">

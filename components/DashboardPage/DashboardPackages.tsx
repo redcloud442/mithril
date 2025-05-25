@@ -210,8 +210,8 @@ const DashboardPackages = ({ teamMemberProfile }: DashboardPackagesProps) => {
                 </span>
               </div>
 
-              <ReusableCard>
-                <div className="flex flex-col gap-2 text-sm stroke-text-orange uppercase">
+              <ReusableCard className="space-y-2">
+                <div className="flex flex-col gap-3 text-sm stroke-text-orange uppercase">
                   <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2">
                     <span className="font-semibold">Date Invested:</span>
                     <span className="text-white">

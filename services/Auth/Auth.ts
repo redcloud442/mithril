@@ -175,7 +175,7 @@ export const handleSignInAdmin = async (params: {
   userName: string;
   password: string;
 }) => {
-  const response = await fetch(`/api/v1/access/xeloraAccess`, {
+  const response = await fetch(`/api/v1/access/omnixAccess`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

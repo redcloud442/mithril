@@ -4,10 +4,10 @@ export const PUBLIC_ROUTES = [
   "/access/login",
   "/access/register",
   "/api/v1/access",
-  "/api/v1/access/xeloraAccess",
+  "/api/v1/access/omnixAccess",
   "/api/health",
   "/api/v1/access/callback",
-  "/access/xeloraAccess",
+  "/access/omnixAccess",
 ];
 
 export const PRIVATE_ROUTES = [

@@ -184,7 +184,7 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
         type="earnings"
       >
         <DialogHeader>
-          <DialogTitle className="stroke-text-orange">
+          <DialogTitle className="stroke-text-orange text-white">
             {selectedPackage?.package_name}
           </DialogTitle>
         </DialogHeader>
