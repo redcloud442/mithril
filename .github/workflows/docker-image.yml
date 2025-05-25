@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image CI/CD
 
 on:
   push:
@@ -11,9 +11,8 @@ permissions:
   packages: write
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     environment: Production
 
     steps:
@@ -35,12 +34,20 @@ jobs:
               --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} \
               -t ghcr.io/redcloud442/mithril:prod .
 
-      - name: Verify Docker login
-        run: docker info
-
-      - name: Verify image tagging
-        run: docker images
-
       - name: Push Docker image
+        run: docker push ghcr.io/redcloud442/mithril:prod
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.25.4"
+
+      - name: Decode and configure kubeconfig
         run: |
-          docker push ghcr.io/redcloud442/mithril:prod
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/mithril-fe container-ptsloy=ghcr.io/redcloud442/mithril:prod -n mithril
+          kubectl rollout status deployment/mithril-fe -n mithril
