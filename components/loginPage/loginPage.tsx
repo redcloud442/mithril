@@ -111,7 +111,6 @@ const LoginPage = () => {
           onSubmit={handleSubmit(handleSignIn)}
         >
           {" "}
-          test
           <FormField
             control={control}
             name="userName"
