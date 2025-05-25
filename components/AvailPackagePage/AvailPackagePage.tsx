@@ -153,10 +153,12 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
         ...chartData,
       ]);
 
-      setTeamMemberProfile((prev) => ({
-        ...prev,
-        company_member_is_active: false,
-      }));
+      if (!teamMemberProfile.company_member_user_id) {
+        setTeamMemberProfile((prev) => ({
+          ...prev,
+          company_member_is_active: false,
+        }));
+      }
 
       setOpen(false);
     } catch (e) {

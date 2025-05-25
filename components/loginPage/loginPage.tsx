@@ -104,7 +104,7 @@ const LoginPage = () => {
   };
 
   return (
-    <ReusableCard title="Welcome to OMNIX GLOBAL!">
+    <ReusableCard title="Welcome to OMNIX GLOBAL!" className="py-20">
       <Form {...form}>
         <form
           className="flex flex-col justify-center gap-6 w-full max-w-xs mx-auto z-50"

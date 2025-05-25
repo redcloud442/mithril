@@ -178,7 +178,10 @@ const XeloraAccess = () => {
   };
 
   return (
-    <ReusableCard className="p-10 space-y-4" title="Welcome to Xelora Access!">
+    <ReusableCard
+      className="p-10 space-y-4 py-24"
+      title="Welcome to Omnix Access!"
+    >
       {step === "login" ? (
         <Form {...form}>
           <form

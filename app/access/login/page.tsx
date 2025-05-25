@@ -3,15 +3,15 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Omnix Global Access Login",
-  description: "Log in to your Omnix Global account and manage your journey.",
+  description: "Log in to your Omnix Global account",
   openGraph: {
     url: "https://www.omnixglobal.io/access/login",
-    title: "Omnix Global | Access Your Account",
+    title: "Omnix Global",
     description: "Log in to your Omnix Global account and manage your journey.",
-    siteName: "Omnix Global",
+    siteName: "www.omnixglobal.io",
     images: [
       {
-        url: "https://www.omnixglobal.io/assets/icons/logo.ico", // ✅ Replace with your actual hosted banner
+        url: "https://www.omnixglobal.io/assets/icons/logo.ico",
         width: 1200,
         height: 630,
         alt: "Omnix Global Login Page",

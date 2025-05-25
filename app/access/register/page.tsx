@@ -15,10 +15,10 @@ export async function generateMetadata({
       "Join Omnix Global now — your path to digital prosperity begins here!",
     openGraph: {
       url: `https://www.omnixglobal.io/access/register?CODE=${CODE}`,
-      title: `Join Omnix Global Now! Invited by ${CODE}`,
+      title: `Join Omnix Global Now!`,
       description:
         "Unlock exclusive rewards and opportunities by joining Omnix Global today.",
-      siteName: "omnixglobal.io",
+      siteName: "www.omnixglobal.io",
       images: [
         {
           url: "https://www.omnixglobal.io/assets/icons/logo.ico",

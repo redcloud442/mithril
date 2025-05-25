@@ -1,20 +1,16 @@
 import { formatNumberLocale } from "@/utils/function";
 import { package_table } from "@prisma/client";
 import { RefreshCcw } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
 import ReusableCardBg from "../DashboardPage/DashboardCardBg/DashboardCardBg";
 import DashboardReinvestPromoPackage from "../DashboardPage/DashboardReinvestPromoPackage/DashboardReinvestPromoPackage";
 import { Button } from "./button";
 import LoaderBounce from "./loader-bounce";
-
 type Props = {
   value: number;
   children?: React.ReactNode;
   handleClick?: () => void;
   refresh?: boolean;
   packages: package_table[];
-  setIsActive: Dispatch<SetStateAction<boolean>>;
-  active: boolean;
 };
 
 const CardBalance = ({ value, handleClick, refresh, packages }: Props) => {

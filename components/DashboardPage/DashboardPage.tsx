@@ -42,9 +42,6 @@ const DashboardPage = ({ packages }: Props) => {
     setCanUserDeposit,
     setIsWithdrawalToday,
   } = useUserHaveAlreadyWithdraw();
-  const [isActive, setIsActive] = useState(
-    teamMemberProfile.company_member_is_active
-  );
 
   const [refresh, setRefresh] = useState(false);
 
@@ -146,8 +143,6 @@ const DashboardPage = ({ packages }: Props) => {
 
         <CardBalance
           packages={packages}
-          setIsActive={setIsActive}
-          active={isActive}
           handleClick={handleRefresh}
           refresh={refresh}
           value={earnings?.company_combined_earnings ?? 0}
