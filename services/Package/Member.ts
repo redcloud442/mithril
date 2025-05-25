@@ -104,12 +104,13 @@ export const createPromoPackageConnection = async (params: {
   packageData: { amount: number; packageId: string };
   teamMemberId: string;
 }) => {
+  const { packageData } = params;
   const response = await fetch(`/api/v1/package/reinvestment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(params.packageData),
+    body: JSON.stringify({ ...packageData }),
   });
 
   const result = await response.json();
