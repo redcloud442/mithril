@@ -22,7 +22,7 @@ const handleFetchDeposit = async () => {
 const page = async () => {
   const { canUserDeposit } = await handleFetchDeposit();
 
-  if (canUserDeposit) {
+  if (!canUserDeposit) {
     redirect("/dashboard");
   }
 

@@ -29,7 +29,7 @@ const Page = async () => {
   const { packageWithdrawal, referralWithdrawal } =
     await handleFetchWithdrawal();
 
-  if (packageWithdrawal || referralWithdrawal) {
+  if (!packageWithdrawal && !referralWithdrawal) {
     redirect("/dashboard");
   }
 

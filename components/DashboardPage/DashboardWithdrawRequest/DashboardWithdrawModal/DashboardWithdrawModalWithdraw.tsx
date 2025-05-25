@@ -144,7 +144,7 @@ const DashboardWithdrawModalWithdraw = () => {
 
           setIsWithdrawalToday({
             ...isWithdrawalToday,
-            package: true,
+            package: false,
           });
           break;
         case "REFERRAL":
@@ -178,7 +178,7 @@ const DashboardWithdrawModalWithdraw = () => {
 
           setIsWithdrawalToday({
             ...isWithdrawalToday,
-            referral: true,
+            referral: false,
           });
 
           break;

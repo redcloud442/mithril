@@ -29,7 +29,7 @@ const Page = async () => {
   const packages = await handleFetchPackages();
 
   return (
-    <Suspense fallback={<Skeleton className="min-h-screen w-full" />}>
+    <Suspense fallback={<Skeleton className="min-h-screen h-full w-full" />}>
       <DashboardPage packages={packages} />
     </Suspense>
   );
