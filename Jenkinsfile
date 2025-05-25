@@ -66,9 +66,6 @@ spec:
             echo "⏳ Waiting for rollout to complete..."
             kubectl rollout status deployment/${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE}
 
-            echo "🔍 Verifying image update..."
-            kubectl get deployment ${DEPLOYMENT_NAME} -n ${K8S_NAMESPACE} \
-              -o=jsonpath="{.spec.template.spec.containers[?(@.name==\"${CONTAINER_NAME}\")].image}"
 
             echo "📦 Listing current pods..."
             kubectl get pods -n ${K8S_NAMESPACE} -o wide
