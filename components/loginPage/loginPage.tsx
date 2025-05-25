@@ -147,7 +147,7 @@ const LoginPage = () => {
           <div className="w-full flex items-center justify-center">
             <Turnstile
               size="flexible"
-              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
               onVerify={(token) => {
                 setCaptchaToken(token);
               }}
