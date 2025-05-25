@@ -94,7 +94,7 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
           amount: Number(result.amount),
           packageId: selectedPackage?.package_id || "",
         },
-        teamMemberId: teamMemberProfile.company_member_id,
+        teamMemberId: teamMemberProfile?.company_member_id || "",
       });
 
       toast({
@@ -143,7 +143,7 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
           profit_amount: Number(computation),
           package_gif: selectedPackage?.package_gif || "",
           package_date_created: new Date().toISOString(),
-          package_member_id: teamMemberProfile?.company_member_id,
+          package_member_id: teamMemberProfile?.company_member_id || "",
           package_days: Number(selectedPackage?.packages_days || 0),
           current_amount: Number(amount),
           currentPercentage: Number(0),
@@ -153,7 +153,7 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
         ...chartData,
       ]);
 
-      if (!teamMemberProfile.company_member_user_id) {
+      if (!teamMemberProfile?.company_member_user_id) {
         setTeamMemberProfile((prev) => ({
           ...prev,
           company_member_is_active: false,

@@ -38,9 +38,10 @@ const MobileNavBar = () => {
       setTotalEarnings(null);
       setEarnings(null);
       setChartData([]);
+
       await supabase.auth.signOut();
-      localStorage.removeItem("isModalOpen");
-      router.push("/auth/login");
+
+      router.refresh();
     } catch (e) {
     } finally {
       setIsModalOpen(false);

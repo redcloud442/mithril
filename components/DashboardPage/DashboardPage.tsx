@@ -100,7 +100,7 @@ const DashboardPage = ({ packages }: Props) => {
               <DashboardDepositProfile />
               <span className="text-2xl text-black text-balance">
                 {" "}
-                {profile.user_first_name} {profile.user_last_name}
+                {profile?.user_first_name} {profile?.user_last_name}
               </span>
             </div>
           </DashboardCardBg>
@@ -109,32 +109,32 @@ const DashboardPage = ({ packages }: Props) => {
             <div className="flex justify-center items-stretch gap-4 flex-grow">
               <DashboardCardBg className="min-h-[100px] flex-1 p-2 text-center text-black rounded-sm flex flex-col justify-center w-full">
                 <h2 className="text-lg font-bold whitespace-nowrap">
-                  {profile.user_username}
+                  {profile?.user_username}
                 </h2>
                 <p className="text-sm font-bold whitespace-nowrap">Username</p>
               </DashboardCardBg>
 
               <DashboardCardBg className="min-h-[100px] flex-1 p-2 text-center text-black rounded-sm flex flex-col justify-center">
                 <div className="text-lg font-bold whitespace-nowrap">
-                  {formatDateToYYYYMMDD(profile.user_date_created)}
+                  {formatDateToYYYYMMDD(profile?.user_date_created || "")}
                   <p className="text-sm font-bold whitespace-nowrap">
                     Member Since
                   </p>
                 </div>
               </DashboardCardBg>
             </div>
-            {teamMemberProfile.company_member_is_active && (
+            {teamMemberProfile?.company_member_is_active && (
               <div className="space-y-1">
                 <div
                   onClick={() =>
-                    handleReferralLink(referral.company_referral_link)
+                    handleReferralLink(referral?.company_referral_link || "")
                   }
                   className="text-xl text-center font-bold border-2 p-1 bg-orange-950 border-orange-500 cursor-pointer"
                 >
                   Get you referral link
                 </div>
                 <div className="text-[11px] font-bold border-2 p-1 bg-orange-950 border-orange-500 text-center">
-                  {referral.company_referral_link}
+                  {referral?.company_referral_link}
                 </div>
               </div>
             )}

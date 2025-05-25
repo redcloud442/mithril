@@ -18,30 +18,21 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let profile = null;
-  let redirectTo = null;
-  let teamMemberProfile = null;
-  let referral = null;
+  const result = await protectionMemberUser();
 
-  try {
-    const result = await protectionMemberUser();
-    profile = result.profile;
-    redirectTo = result.redirect;
-    teamMemberProfile = result.teamMemberProfile;
-    referral = result.referral;
-  } catch (err) {
-    redirect(redirectTo ?? "/500");
+  if (result.redirect) {
+    redirect(result.redirect);
   }
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <SidebarProvider>
         <RoleProvider
-          initialProfile={profile as user_table}
+          initialProfile={result.profile as user_table}
           initialTeamMemberProfile={
-            teamMemberProfile as company_member_table & user_table
+            result.teamMemberProfile as company_member_table & user_table
           }
-          initialReferral={referral as company_referral_link_table}
+          initialReferral={result.referral as company_referral_link_table}
         >
           <Suspense
             fallback={<Skeleton className="h-[calc(100vh-10rem)] w-full" />}
