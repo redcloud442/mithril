@@ -109,7 +109,7 @@ export const createPromoPackageConnection = async (params: {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(params),
+    body: JSON.stringify(params.packageData),
   });
 
   const result = await response.json();

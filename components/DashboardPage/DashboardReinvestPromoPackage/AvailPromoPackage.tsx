@@ -29,15 +29,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { package_table } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type Props = {
   onClick: () => void;
   selectedPackage: package_table | null;
+  setSelectedPackage: Dispatch<SetStateAction<package_table | null>>;
 };
 
-const AvailPromoPackage = ({ onClick, selectedPackage }: Props) => {
+const AvailPromoPackage = ({
+  onClick,
+  selectedPackage,
+  setSelectedPackage,
+}: Props) => {
   const { earnings, setEarnings } = useUserEarningsStore();
   const { chartData, setChartData } = usePackageChartData();
   const { toast } = useToast();
@@ -174,6 +179,7 @@ const AvailPromoPackage = ({ onClick, selectedPackage }: Props) => {
         setOpen(open);
         if (!open) {
           setOpen(false);
+          setSelectedPackage(null);
         }
       }}
     >

@@ -1,10 +1,13 @@
 import { package_table } from "@prisma/client";
 import Image from "next/image";
+import { Dispatch, SetStateAction } from "react";
 import AvailPackagePage from "../AvailPackagePage/AvailPackagePage";
 import AvailPromoPackage from "../DashboardPage/DashboardReinvestPromoPackage/AvailPromoPackage";
+
 type Props = {
   onClick: () => void;
   selectedPackage: package_table | null;
+  setSelectedPackage: Dispatch<SetStateAction<package_table | null>>;
   packages: package_table;
   type?: "reinvest" | "avail";
 };
@@ -13,6 +16,7 @@ const PackageCard = ({
   onClick,
   packages,
   selectedPackage,
+  setSelectedPackage,
   type = "avail",
 }: Props) => {
   return (
@@ -31,6 +35,7 @@ const PackageCard = ({
         <AvailPromoPackage
           onClick={onClick}
           selectedPackage={selectedPackage}
+          setSelectedPackage={setSelectedPackage}
         />
       )}
 

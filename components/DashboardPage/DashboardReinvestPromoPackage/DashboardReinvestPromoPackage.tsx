@@ -65,6 +65,7 @@ const DashboardReinvestPromoPackage = ({ packages: initialPackage }: Props) => {
                 key={pkg.package_id}
                 packages={pkg}
                 selectedPackage={selectedPackage || null}
+                setSelectedPackage={setSelectedPackage}
                 onClick={() => handlePackageSelect(pkg)}
                 type="reinvest"
               />
