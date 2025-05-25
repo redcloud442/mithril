@@ -20,7 +20,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { BoundTurnstileObject } from "react-turnstile";
+import Turnstile, { BoundTurnstileObject } from "react-turnstile";
 import ReusableCard from "../ui/card-reusable";
 import {
   Form,
@@ -38,7 +38,7 @@ import {
 } from "../ui/input-otp";
 import { PasswordInput } from "../ui/passwordInput";
 
-const XeloraAccess = () => {
+const OmnixAccess = () => {
   const [step, setStep] = useState<"login" | "verify">("login");
   const [email, setEmail] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -86,13 +86,13 @@ const XeloraAccess = () => {
 
   const handleSignIn = async (data: LoginFormValues) => {
     try {
-      // if (!captchaToken) {
-      //   return toast({
-      //     title: "Please wait",
-      //     description: "Captcha is required.",
-      //     variant: "destructive",
-      //   });
-      // }
+      if (!captchaToken) {
+        return toast({
+          title: "Please wait",
+          description: "Captcha is required.",
+          variant: "destructive",
+        });
+      }
       setIsLoading(true);
 
       const sanitizedData = escapeFormData(data);
@@ -228,13 +228,13 @@ const XeloraAccess = () => {
               )}
             />
 
-            {/* <Turnstile
+            <Turnstile
               size="flexible"
-              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
-              onVerify={(token) => {
+              sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+              onVerify={(token: string) => {
                 setCaptchaToken(token);
               }}
-            /> */}
+            />
             <div className="w-full flex justify-center">
               <Button
                 variant="card"
@@ -298,4 +298,4 @@ const XeloraAccess = () => {
   );
 };
 
-export default XeloraAccess;
+export default OmnixAccess;

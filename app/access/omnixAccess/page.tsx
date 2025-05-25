@@ -1,4 +1,4 @@
-import XeloraAccess from "@/components/XeloraAccess/XeloraAccessPage";
+import OmnixAccess from "@/components/OmnixAccess/XeloraAccessPage";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,6 +10,6 @@ export const metadata: Metadata = {
 };
 
 const Page = async () => {
-  return <XeloraAccess />;
+  return <OmnixAccess />;
 };
 export default Page;
