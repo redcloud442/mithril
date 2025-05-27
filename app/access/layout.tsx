@@ -16,7 +16,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       />
 
       <div className="absolute top-0 left-0 w-full h-full bg-black opacity-40 z-10" />
-
+w
       {children}
     </section>
   );

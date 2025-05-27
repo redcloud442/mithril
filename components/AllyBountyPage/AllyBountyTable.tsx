@@ -56,8 +56,6 @@ const AllyBountyTable = () => {
     try {
       if (!teamMemberProfile) return;
 
-      setIsFetchingList(true);
-
       const cacheKey = `${activePage}`;
 
       if (cachedIndirectReferral.current[cacheKey]) {
