@@ -1,15 +1,14 @@
 // app/dashboard/page.tsx
-
 import DashboardPage from "@/components/DashboardPage/DashboardPage";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
 
-const handleFetchPackages = async () => {
+const handleFetchPackages = async (cookieString: string) => {
   const packages = await fetch(`${process.env.API_URL}/api/v1/package`, {
     method: "GET",
     headers: {
-      cookie: (await cookies()).toString(),
+      cookie: cookieString,
     },
     next: {
       revalidate: 60,
@@ -21,12 +20,14 @@ const handleFetchPackages = async () => {
   }
 
   const { data } = await packages.json();
-
   return data;
 };
 
 const Page = async () => {
-  const packages = await handleFetchPackages();
+  const cookieStore = cookies();
+  const cookieString = cookieStore.toString();
+
+  const packages = await handleFetchPackages(cookieString);
 
   return (
     <Suspense fallback={<Skeleton className="min-h-screen h-full w-full" />}>
