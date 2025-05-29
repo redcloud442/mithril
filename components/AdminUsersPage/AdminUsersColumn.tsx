@@ -6,6 +6,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/hooks/use-toast";
 import { logError } from "@/services/Error/ErrorLogs";
 import { formatDateToYYYYMMDD } from "@/utils/function";
 import { createClientSide } from "@/utils/supabase/client";
@@ -42,6 +43,10 @@ export const AdminUsersColumn = (
         memberId: alliance_member_alliance_id,
         type: "PROMOTE",
       });
+      toast({
+        title: "Promote to Merchant",
+        description: "Promote to Merchant",
+      });
     } catch (e) {
       if (e instanceof Error) {
         await logError(supabaseClient, {
@@ -65,6 +70,11 @@ export const AdminUsersColumn = (
         role: "",
         memberId: alliance_member_alliance_id,
         type: type,
+      });
+
+      toast({
+        title: "Ban User",
+        description: "Ban User",
       });
 
       // await handleUpdateUserRestriction({
