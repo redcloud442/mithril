@@ -1,9 +1,9 @@
 // app/withdraw/page.tsx
-import { Skeleton } from "@/components/ui/skeleton";
 import WithdrawPage from "@/components/WithdrawPage/WithdrawPage";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import Loading from "../loading";
 
 const handleFetchWithdrawal = async () => {
   const withdrawal = await fetch(
@@ -34,15 +34,7 @@ const Page = async () => {
   }
 
   return (
-    <Suspense
-      fallback={
-        <div className="space-y-4">
-          <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-64 w-full max-w-3xl" />
-          <Skeleton className="h-64 w-full max-w-2xl" />
-        </div>
-      }
-    >
+    <Suspense fallback={<Loading />}>
       <WithdrawPage />
     </Suspense>
   );

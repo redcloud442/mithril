@@ -3,7 +3,6 @@ import { company_transaction_table } from "@prisma/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   data: company_transaction_table[];
@@ -22,22 +21,25 @@ const HistoryCardList = ({
   isLoading = false,
   currentStatus,
 }: Props) => {
-  if (isLoading && data.length === 0) {
-    return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <Skeleton key={i} className="h-14 rounded-md" />
-        ))}
-      </div>
-    );
-  }
-
   if (data.length === 0) {
     return <p className="text-center text-gray-500">No transactions found.</p>;
   }
 
   return (
     <div className="overflow-x-auto rounded-lg border-2 border-orange-500 shadow-md bg-orange-500/10">
+      {isLoading && (
+        <div
+          className={`block absolute inset-0 top-0 left-0 bg-pageColor/50 dark:bg-zinc-800/70 z-50 transition-opacity duration-300`}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="animate-pulse transition-all duration-1000">
+              {/* Spinning loader circle */}
+              <div className="w-16 h-16 border-4 border-yellow-400/30 border-t-yellow-400 rounded-full animate-spin"></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <table className="min-w-full text-sm table-fixed">
         <thead className="bg-[#1a1a1a] text-white uppercase text-xs">
           <tr>
@@ -67,7 +69,7 @@ const HistoryCardList = ({
                 >
                   ₱ {formatNumberLocale(item.company_transaction_amount ?? 0)}
                 </td>
-                <td className="px-4 py-3 text-gray-400">
+                <td className="px-4 py-3 text-gray-400 w-[180px] whitespace-nowrap">
                   {formateMonthDateYearv2(item.company_transaction_date)}
                 </td>
                 <td className="px-4 py-3 text-gray-400">

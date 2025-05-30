@@ -1,8 +1,8 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import UserProfilePageUser from "@/components/UserProfilePage/UserProfilePageUser";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
+import Loading from "../loading";
 
 export const metadata: Metadata = {
   title: "Profile Page",
@@ -33,15 +33,7 @@ const Page = async () => {
   const { userProfile } = await handleFetchUser();
 
   return (
-    <Suspense
-      fallback={
-        <>
-          <Skeleton className="h-[calc(100vh-10rem)] w-full" />
-          <Skeleton className="h-[calc(100vh-10rem)] w-full" />
-          <Skeleton className="h-[calc(100vh-10rem)] w-full" />
-        </>
-      }
-    >
+    <Suspense fallback={<Loading />}>
       <UserProfilePageUser userProfile={userProfile} />
     </Suspense>
   );

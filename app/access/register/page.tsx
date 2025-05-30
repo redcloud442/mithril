@@ -1,6 +1,8 @@
 import RegisterPage from "@/components/registerPage/registerPage";
 import prisma from "@/utils/prisma";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import Loading from "../loading";
 
 export async function generateMetadata({
   searchParams,
@@ -76,7 +78,9 @@ const Page = async ({
   }
 
   return (
-    <RegisterPage referralLink={CODE} userName={user?.user_username || ""} />
+    <Suspense fallback={<Loading />}>
+      <RegisterPage referralLink={CODE} userName={user?.user_username || ""} />
+    </Suspense>
   );
 };
 

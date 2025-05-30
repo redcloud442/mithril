@@ -221,7 +221,3 @@ export type HistoryData = {
   data: company_transaction_table[];
   count: number;
 };
-
-export type TransactionHistoryData = {
-  data: Partial<Record<"EARNINGS" | "WITHDRAWAL" | "DEPOSIT", HistoryData>>;
-};

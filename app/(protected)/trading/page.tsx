@@ -1,7 +1,7 @@
 import PackagePage from "@/components/PackagePage/PackagePage";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
+import Loading from "../loading";
 
 const handleFetchPackages = async () => {
   const packages = await fetch(`${process.env.API_URL}/api/v1/package`, {
@@ -28,15 +28,7 @@ const page = async () => {
   const packages = await handleFetchPackages();
 
   return (
-    <Suspense
-      fallback={
-        <div className="space-y-4">
-          <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-64 w-full max-w-3xl" />
-          <Skeleton className="h-64 w-full max-w-2xl" />
-        </div>
-      }
-    >
+    <Suspense fallback={<Loading />}>
       <PackagePage packages={packages} />
     </Suspense>
   );

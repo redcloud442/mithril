@@ -1,6 +1,8 @@
 import DepositPage from "@/components/DepositPage/DepositPage";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import Loading from "../loading";
 
 const handleFetchDeposit = async () => {
   const deposit = await fetch(`${process.env.API_URL}/api/v1/deposit/user`, {
@@ -26,7 +28,11 @@ const page = async () => {
     redirect("/dashboard");
   }
 
-  return <DepositPage />;
+  return (
+    <Suspense fallback={<Loading />}>
+      <DepositPage />
+    </Suspense>
+  );
 };
 
 export default page;

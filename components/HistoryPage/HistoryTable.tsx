@@ -4,7 +4,8 @@ import { logError } from "@/services/Error/ErrorLogs";
 import { getTransactionHistory } from "@/services/Transaction/Transaction";
 import { useRole } from "@/utils/context/roleContext";
 import { createClientSide } from "@/utils/supabase/client";
-import { TransactionHistoryData } from "@/utils/types";
+import { HistoryData } from "@/utils/types";
+import { company_transaction_table } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -23,9 +24,7 @@ const HistoryTable = () => {
 
   const { teamMemberProfile } = useRole();
 
-  const [requestData, setRequestData] = useState<TransactionHistoryData | null>(
-    null
-  );
+  const [requestData, setRequestData] = useState<HistoryData | null>(null);
   const [activePage, setActivePage] = useState(1);
   const [isFetchingList, setIsFetchingList] = useState(false);
 
@@ -36,8 +35,15 @@ const HistoryTable = () => {
   });
 
   const currentStatusRef = useRef<"EARNINGS" | "WITHDRAWAL" | "DEPOSIT">(
-    "EARNINGS"
+    transaction as "EARNINGS" | "WITHDRAWAL" | "DEPOSIT"
   );
+
+  const cacheTransaction = useRef<{
+    [key: string]: {
+      data: company_transaction_table[];
+      totalCount: number;
+    };
+  }>({});
 
   const fetchRequest = async (
     statusType?: "EARNINGS" | "WITHDRAWAL" | "DEPOSIT"
@@ -46,9 +52,17 @@ const HistoryTable = () => {
       if (!teamMemberProfile) return;
       setIsFetchingList(true);
 
-      const { statusFilter } = getValues();
+      const currentStatus = statusType ?? getValues("statusFilter");
+      const cacheKey = `${activePage}-${currentStatus}`;
 
-      const currentStatus = statusType ?? statusFilter;
+      if (cacheTransaction.current[cacheKey]) {
+        const cached = cacheTransaction.current[cacheKey];
+        setRequestData({
+          data: cached.data,
+          count: cached.totalCount,
+        });
+        return;
+      }
 
       const { transactionHistory, totalTransactions } =
         await getTransactionHistory({
@@ -57,23 +71,15 @@ const HistoryTable = () => {
           limit: 10,
         });
 
-      setRequestData((prev) => {
-        const initialData = prev?.data ?? {
-          EARNINGS: { data: [], count: 0 },
-          WITHDRAWAL: { data: [], count: 0 },
-          DEPOSIT: { data: [], count: 0 },
-        };
-
-        return {
-          data: {
-            ...initialData,
-            [currentStatus]: {
-              data: transactionHistory,
-              count: totalTransactions,
-            },
-          },
-        };
+      setRequestData({
+        data: transactionHistory,
+        count: totalTransactions,
       });
+
+      cacheTransaction.current[cacheKey] = {
+        data: transactionHistory,
+        totalCount: totalTransactions,
+      };
     } catch (e) {
       if (e instanceof Error) {
         await logError(supabaseClient, {
@@ -95,23 +101,18 @@ const HistoryTable = () => {
 
   const handleTabChange = async (type?: string) => {
     const statusType = type as "EARNINGS" | "WITHDRAWAL" | "DEPOSIT";
-    window.history.pushState({}, "", `/history?transaction=${statusType}`);
-    setValue("statusFilter", statusType);
     currentStatusRef.current = statusType;
-
-    const hasData = requestData?.data?.[statusType]?.data?.length;
-    if (hasData) return;
+    setValue("statusFilter", statusType);
+    setActivePage(1); // Reset pagination on tab change
+    window.history.pushState({}, "", `/history?transaction=${statusType}`);
 
     await fetchRequest(statusType);
   };
 
-  const pageCount = Math.ceil(
-    (requestData?.data?.[currentStatusRef.current]?.count || 0) / 10
-  );
+  const pageCount = Math.ceil((requestData?.count || 0) / 10);
 
-  const defaultTab = transaction
-    ? (transaction as "EARNINGS" | "WITHDRAWAL" | "DEPOSIT")
-    : "EARNINGS";
+  const defaultTab =
+    (transaction as "EARNINGS" | "WITHDRAWAL" | "DEPOSIT") || "EARNINGS";
 
   return (
     <ReusableCard type="user" title="Transaction History" className="p-0">
@@ -124,34 +125,34 @@ const HistoryTable = () => {
 
         <TabsContent value="EARNINGS">
           <HistoryCardList
-            data={requestData?.data?.["EARNINGS"]?.data || []}
+            data={requestData?.data || []}
             activePage={activePage}
             setActivePage={setActivePage}
             pageCount={pageCount}
             isLoading={isFetchingList}
-            currentStatus={currentStatusRef.current}
+            currentStatus="EARNINGS"
           />
         </TabsContent>
 
         <TabsContent value="WITHDRAWAL">
           <HistoryCardList
-            data={requestData?.data?.["WITHDRAWAL"]?.data || []}
+            data={requestData?.data || []}
             activePage={activePage}
             setActivePage={setActivePage}
             pageCount={pageCount}
             isLoading={isFetchingList}
-            currentStatus={currentStatusRef.current}
+            currentStatus="WITHDRAWAL"
           />
         </TabsContent>
 
         <TabsContent value="DEPOSIT">
           <HistoryCardList
-            data={requestData?.data?.["DEPOSIT"]?.data || []}
+            data={requestData?.data || []}
             activePage={activePage}
             setActivePage={setActivePage}
             pageCount={pageCount}
             isLoading={isFetchingList}
-            currentStatus={currentStatusRef.current}
+            currentStatus="DEPOSIT"
           />
         </TabsContent>
       </Tabs>

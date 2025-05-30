@@ -12,7 +12,10 @@ import { logError } from "@/services/Error/ErrorLogs";
 import { getTransactionHistory } from "@/services/Transaction/Transaction";
 import { useUserTransactionHistoryStore } from "@/store/useTransactionStore";
 import { createClientSide } from "@/utils/supabase/client";
-import { company_member_table } from "@prisma/client";
+import {
+  company_member_table,
+  company_transaction_table,
+} from "@prisma/client";
 import {
   ColumnFiltersState,
   flexRender,
@@ -23,7 +26,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import TableLoading from "../ui/tableLoading";
@@ -43,11 +46,28 @@ const TransactionHistoryTable = ({ teamMemberProfile }: DataTableProps) => {
   const [isFetchingList, setIsFetchingList] = useState(false);
   const { transactionHistory, setTransactionHistory } =
     useUserTransactionHistoryStore();
+  const cacheTransaction = useRef<{
+    [key: string]: {
+      data: company_transaction_table[];
+      totalCount: number;
+    };
+  }>({});
 
   const fetchRequest = async () => {
     try {
       if (!teamMemberProfile) return;
       setIsFetchingList(true);
+
+      const cacheKey = `${activePage}-${status}`;
+
+      if (cacheTransaction.current[cacheKey]) {
+        const cachedData = cacheTransaction.current[cacheKey];
+        setTransactionHistory({
+          data: cachedData.data,
+          count: cachedData.totalCount,
+        });
+        return;
+      }
 
       const { transactionHistory: transactionHistoryData, totalTransactions } =
         await getTransactionHistory({
@@ -60,6 +80,11 @@ const TransactionHistoryTable = ({ teamMemberProfile }: DataTableProps) => {
         data: transactionHistoryData,
         count: totalTransactions,
       });
+
+      cacheTransaction.current[cacheKey] = {
+        data: transactionHistoryData,
+        totalCount: totalTransactions,
+      };
     } catch (e) {
       if (e instanceof Error) {
         await logError(supabaseClient, {
