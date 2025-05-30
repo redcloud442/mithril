@@ -31,11 +31,14 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import QRCodeViewer from "./ImageViewer";
 
 const DashboardDepositModalDeposit = () => {
   const supabaseClient = createClientSide();
   const router = useRouter();
   const [topUpOptions, setTopUpOptions] = useState<merchant_table[]>([]);
+  const [selectedMerchant, setSelectedMerchant] =
+    useState<merchant_table | null>(null);
   const { canUserDeposit, setCanUserDeposit } = useUserHaveAlreadyWithdraw();
 
   const { toast } = useToast();
@@ -144,6 +147,7 @@ const DashboardDepositModalDeposit = () => {
       (option) => option.merchant_id === value
     );
     if (selectedOption) {
+      setSelectedMerchant(selectedOption);
       setValue("accountName", selectedOption.merchant_account_name || "");
       setValue("accountNumber", selectedOption.merchant_account_number || "");
     }
@@ -189,6 +193,12 @@ const DashboardDepositModalDeposit = () => {
             </FormItem>
           )}
         />
+
+        {selectedMerchant && (
+          <QRCodeViewer
+            qrImageSrc={selectedMerchant.merchant_qr_attachment || ""}
+          />
+        )}
 
         <FormField
           control={control}
