@@ -247,7 +247,8 @@ const DashboardPage = ({ packages }: Props) => {
 
             <ReusableCardBg type="gray" className="p-1">
               <Link
-                href="facebook.com"
+                href="https://www.facebook.com/groups/1903585910415931"
+                target="_blank"
                 className="flex flex-col items-center cursor-pointer"
               >
                 <Image
@@ -263,14 +264,6 @@ const DashboardPage = ({ packages }: Props) => {
             </ReusableCardBg>
           </div>
         </ReusableCard>
-
-        {/* <DashboardDepositModalPackages
-          packages={packages}
-          earnings={earnings}
-          setIsActive={setIsActive}
-          teamMemberProfile={teamMemberProfile}
-          className="w-full"
-        /> */}
 
         {chartData.length > 0 && (
           <div className=" gap-6">
