@@ -68,13 +68,12 @@ const PersonalInformation = ({ userProfile, type = "ADMIN" }: Props) => {
   };
 
   useEffect(() => {
-    if (!userProfile.user_id || userProfile.company_member_role === "ADMIN")
-      return;
+    if (!userProfile.user_id) return;
+
     const fetchUserSponsor = async () => {
       try {
-        const userId = params.userId;
         const userSponsor = await getUserSponsor({
-          userId: userId ? (userId as string) : userProfile.user_id,
+          userId: userProfile.user_id,
         });
 
         setUserSponsor({ user_username: userSponsor });

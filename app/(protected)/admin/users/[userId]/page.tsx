@@ -33,13 +33,14 @@ const handleFetchUserProfile = async (userId: string) => {
 const Page = async ({ params }: { params: Promise<{ userId: string }> }) => {
   const { userId } = await params;
 
-  const { profile, userProfile, teamMemberProfile } =
+  const { profile, userProfile, teamMemberProfile, merchantData } =
     await handleFetchUserProfile(userId);
 
   const combinedData = {
     ...userProfile,
     ...profile,
     ...teamMemberProfile,
+    ...merchantData,
   };
 
   return (
