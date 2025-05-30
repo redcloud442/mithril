@@ -277,6 +277,7 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
                     </FormControl>
                     <Button
                       variant="card"
+                      type="button"
                       className="absolute right-2 top-7 z-50 px-2"
                       onClick={() => {
                         field.onChange(maxAmount?.toString() || "");

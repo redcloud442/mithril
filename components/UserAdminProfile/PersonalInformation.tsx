@@ -14,6 +14,7 @@ import { Label } from "../ui/label";
 import TableLoading from "../ui/tableLoading";
 import ActiveTreeModal from "./ActiveTreeModal/ActiveTreeModal";
 
+
 type Props = {
   userProfile: UserRequestdata;
   type?: "ADMIN" | "MEMBER" | "ACCOUNTING" | "MERCHANT";
