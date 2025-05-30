@@ -24,7 +24,7 @@ const handleFetchPackages = async (cookieString: string) => {
 };
 
 const Page = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const cookieString = cookieStore.toString();
 
   const packages = await handleFetchPackages(cookieString);
