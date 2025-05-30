@@ -14,7 +14,7 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { RefreshCcw } from "lucide-react";
+import { Eye, RefreshCcw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReusableTable from "../ReusableTable/ReusableTable";
@@ -40,6 +40,7 @@ const AllyBountyTable = () => {
   const isAscendingSort =
     sorting?.[0]?.desc === undefined ? true : !sorting[0].desc;
   const [refreshCooldown, setRefreshCooldown] = useState(0);
+  const [viewAllReferrals, setViewAllReferrals] = useState(false);
 
   const cachedIndirectReferral = useRef<{
     [key: string]: {
@@ -56,7 +57,7 @@ const AllyBountyTable = () => {
     try {
       if (!teamMemberProfile) return;
 
-      const cacheKey = `${activePage}`;
+      const cacheKey = `${activePage}-${viewAllReferrals}`;
 
       if (cachedIndirectReferral.current[cacheKey]) {
         const cachedData = cachedIndirectReferral.current[cacheKey];
@@ -64,6 +65,7 @@ const AllyBountyTable = () => {
           data: cachedData.data,
           count: cachedData.totalCount,
         });
+        return;
       }
 
       const sanitizedData = escapeFormData(getValues());
@@ -76,6 +78,7 @@ const AllyBountyTable = () => {
         columnAccessor: columnAccessor,
         isAscendingSort: isAscendingSort,
         search: emailFilter,
+        viewAllReferrals: viewAllReferrals,
       });
 
       setDirectReferral({
@@ -101,7 +104,7 @@ const AllyBountyTable = () => {
     }
   };
 
-  const columns = AllyBountyColumn();
+  const columns = AllyBountyColumn(viewAllReferrals);
 
   const table = useReactTable({
     data: directReferral.data,
@@ -129,9 +132,10 @@ const AllyBountyTable = () => {
 
   useEffect(() => {
     fetchAdminRequest();
-  }, [teamMemberProfile, activePage, sorting]);
+  }, [teamMemberProfile, activePage, sorting, viewAllReferrals]);
 
   const pageCount = Math.ceil(directReferral.count / 10);
+
   const handleRefresh = () => {
     cachedIndirectReferral.current = {};
     setIsFetchingList(true);
@@ -150,25 +154,40 @@ const AllyBountyTable = () => {
         }
         return prev - 1;
       });
-    }, 1000); // decrease every second
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [refreshCooldown]);
 
+  const handleViewAllReferrals = (value: boolean) => {
+    setViewAllReferrals(value);
+  };
+
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <Button
-          onClick={handleRefresh}
-          variant="outline"
-          disabled={isFetchingList || refreshCooldown > 0}
-          className="gap-2"
-        >
-          <RefreshCcw className="w-4 h-4" />
-          {refreshCooldown > 0
-            ? `Wait ${refreshCooldown}s to refresh`
-            : "Refresh"}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleRefresh}
+            variant="outline"
+            disabled={isFetchingList || refreshCooldown > 0}
+            className="gap-2"
+          >
+            <RefreshCcw className="w-4 h-4" />
+            {refreshCooldown > 0
+              ? `Wait ${refreshCooldown}s to refresh`
+              : "Refresh"}
+          </Button>
+
+          <Button
+            onClick={() => handleViewAllReferrals(!viewAllReferrals)}
+            variant="outline"
+            className="gap-2"
+          >
+            <Eye className="w-4 h-4" />
+            View All Referrals
+          </Button>
+        </div>
       </div>
 
       <ReusableTable

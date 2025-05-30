@@ -7,6 +7,7 @@ export const getAllyBounty = async (params: {
   search?: string;
   columnAccessor: string;
   isAscendingSort: boolean;
+  viewAllReferrals: boolean;
 }) => {
   const urlParams = {
     page: params.page,
@@ -14,6 +15,7 @@ export const getAllyBounty = async (params: {
     search: params.search || "",
     columnAccessor: params.columnAccessor,
     isAscendingSort: params.isAscendingSort,
+    viewAllReferrals: params.viewAllReferrals,
   };
 
   const response = await fetch(`/api/v1/referral/direct`, {
