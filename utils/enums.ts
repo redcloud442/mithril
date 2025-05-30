@@ -5,7 +5,7 @@ export enum CompanyMemberRole {
   ACCOUNTING_HEAD = "ACCOUNTING_HEAD",
   MERCHANT = "MERCHANT",
 }
-
+//test
 export enum RouteAction {
   ALLOW = "ALLOW",
   REDIRECT_LOGIN = "REDIRECT_LOGIN",
