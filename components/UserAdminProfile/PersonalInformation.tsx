@@ -14,7 +14,6 @@ import { Label } from "../ui/label";
 import TableLoading from "../ui/tableLoading";
 import ActiveTreeModal from "./ActiveTreeModal/ActiveTreeModal";
 
-
 type Props = {
   userProfile: UserRequestdata;
   type?: "ADMIN" | "MEMBER" | "ACCOUNTING" | "MERCHANT";
@@ -38,7 +37,7 @@ const PersonalInformation = ({ userProfile, type = "ADMIN" }: Props) => {
 
       if (data.url.hashed_token) {
         await navigator.clipboard.writeText(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback?hashed_token=${data.url.hashed_token}`
+          `https://www.womnixglobal.io/auth/callback?hashed_token=${data.url.hashed_token}`
         );
         setTimeout(() => {
           toast({
