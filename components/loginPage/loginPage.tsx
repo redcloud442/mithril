@@ -84,6 +84,9 @@ const LoginPage = () => {
 
       router.push("/dashboard");
     } catch (e) {
+      if (captcha.current) {
+        captcha.current.reset();
+      }
       if (e instanceof Error) {
         toast({
           title: "Something went wrong",
