@@ -149,9 +149,6 @@
 
 //         if (posterUploadError) throw new Error(posterUploadError.message);
 
-//         const videoUrl = `https://cdn.primepinas.com/storage/v1/object/public/TESTIMONIAL_BUCKET/${filePath}`;
-//         const posterUrl = `https://cdn.primepinas.com/storage/v1/object/public/TESTIMONIAL_BUCKET/${posterPath}`;
-
 //         uploadedData.push({ videoUrl, posterUrl });
 
 //         setProgress(Math.round(((i + 1) / totalFiles) * 80));

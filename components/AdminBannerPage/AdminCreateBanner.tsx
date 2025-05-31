@@ -66,14 +66,6 @@
 //           return;
 //         }
 
-//         attachmentUrl =
-//           process.env.NODE_ENV === "development"
-//             ? "https://qkrltxqicdallokpzdif.supabase.co/storage/v1/object/public/TESTIMONIAL_BUCKET/" +
-//               filePath
-//             : "https://cdn.primepinas.com/storage/v1/object/public/TESTIMONIAL_BUCKET/" +
-//               filePath;
-//       }
-
 //       const newBanner = await createRaffleBanner({
 //         bannerImage: attachmentUrl ? attachmentUrl : "",
 //       });

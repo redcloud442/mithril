@@ -1,5 +1,3 @@
-import { PackagesFormValues } from "@/components/AdminPackagesPage/EditPackagesModal";
-
 import { package_table } from "@prisma/client";
 
 export const getAdminPackages = async () => {
@@ -21,34 +19,6 @@ export const getAdminPackages = async () => {
   const { data } = result;
 
   return data as package_table[];
-};
-
-export const updatePackagesData = async (params: {
-  packageData: PackagesFormValues;
-  packageId: string;
-  teamMemberId: string;
-}) => {
-  const { packageId } = params;
-
-  const response = await fetch(`/api/v1/package/` + packageId, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(params),
-  });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      result.error || "An error occurred while creating the top-up request."
-    );
-  }
-
-  const { data } = result;
-
-  return data;
 };
 
 export const createPackage = async (params: {

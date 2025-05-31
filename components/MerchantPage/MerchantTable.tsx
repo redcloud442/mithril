@@ -134,7 +134,7 @@ const MerchantTable = () => {
     try {
       const sanitizedData = escapeFormData(data);
       const file = data.file;
-      let attachmentUrl = null;
+      const attachmentUrl = null;
 
       if (file) {
         const filePath = `uploads/${Date.now()}_${file.name}`;
@@ -151,10 +151,6 @@ const MerchantTable = () => {
           });
           return;
         }
-
-        attachmentUrl =
-          "https://cdn.primepinas.com/storage/v1/object/public/REQUEST_ATTACHMENTS/" +
-          filePath;
       }
 
       const { data: merchantData } = await handleCreateMerchantData({
