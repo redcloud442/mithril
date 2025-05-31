@@ -194,7 +194,7 @@ const DashboardDepositModalDeposit = () => {
           )}
         />
 
-        {selectedMerchant && (
+        {selectedMerchant && selectedMerchant.merchant_qr_attachment !== "" && (
           <QRCodeViewer
             qrImageSrc={selectedMerchant.merchant_qr_attachment || ""}
           />
