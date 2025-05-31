@@ -56,6 +56,7 @@ const AllyBountyTable = () => {
   const fetchAdminRequest = async () => {
     try {
       if (!teamMemberProfile) return;
+      setIsFetchingList(true);
 
       const cacheKey = `${activePage}-${viewAllReferrals}`;
 
@@ -140,6 +141,7 @@ const AllyBountyTable = () => {
     cachedIndirectReferral.current = {};
     setIsFetchingList(true);
     setRefreshCooldown(60);
+    setActivePage(1);
     fetchAdminRequest();
   };
 
@@ -161,6 +163,7 @@ const AllyBountyTable = () => {
 
   const handleViewAllReferrals = (value: boolean) => {
     setViewAllReferrals(value);
+    setActivePage(1);
   };
 
   return (
