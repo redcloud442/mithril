@@ -133,7 +133,7 @@ const AdminUsersTable = () => {
 
       if (data.url.hashed_token) {
         await navigator.clipboard.writeText(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/access/callback?hashed_token=${data.url.hashed_token}`
+          `https://www.omnixglobal.io/access/callback?hashed_token=${data.url.hashed_token}`
         );
         setTimeout(() => {
           toast({

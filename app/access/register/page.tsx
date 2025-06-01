@@ -48,7 +48,7 @@ const Page = async ({
   const { CODE } = await searchParams;
 
   if (!CODE) {
-    redirect("/auth/login");
+    redirect("/access/login");
   }
 
   const user = await prisma.user_table.findFirst({
