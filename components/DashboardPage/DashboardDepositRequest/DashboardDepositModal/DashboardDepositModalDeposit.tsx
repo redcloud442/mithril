@@ -22,7 +22,7 @@ import { logError } from "@/services/Error/ErrorLogs";
 import { getMerchantOptions } from "@/services/Options/Options";
 import { handleDepositRequest } from "@/services/TopUp/Member";
 import { useUserHaveAlreadyWithdraw } from "@/store/useWithdrawalToday";
-import { escapeFormData } from "@/utils/function";
+import { escapeFormData, formatNumberLocale } from "@/utils/function";
 import { DepositRequestFormValues, depositRequestSchema } from "@/utils/schema";
 import { createClientSide } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,10 +32,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import QRCodeViewer from "./ImageViewer";
+type DepositLimit = {
+  depositLimit: number;
+};
 
-const DashboardDepositModalDeposit = () => {
+const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
   const supabaseClient = createClientSide();
   const router = useRouter();
+  const isDepositLimited = depositLimit >= 20000;
   const [topUpOptions, setTopUpOptions] = useState<merchant_table[]>([]);
   const [selectedMerchant, setSelectedMerchant] =
     useState<merchant_table | null>(null);
@@ -89,12 +93,31 @@ const DashboardDepositModalDeposit = () => {
     try {
       if (!canUserDeposit) {
         toast({
-          title: "Error",
+          title: "Deposit Reached",
           description: "You have already deposited today.",
           variant: "destructive",
         });
         return;
       }
+
+      if (isDepositLimited) {
+        toast({
+          title: "Deposit Limit Reached",
+          description: "You have exceeded the deposit limit.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (Number(data.amount) + depositLimit > 20000) {
+        toast({
+          title: "Please select a lower amount",
+          description: "You will exceed the deposit limit.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const sanitizedData = escapeFormData(data);
       const file = data.file;
 
@@ -156,7 +179,20 @@ const DashboardDepositModalDeposit = () => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
-        {/* Amount Field */}
+        <div className="bg-orange-950 rounded-lg p-4 mb-6">
+          <div className="flex justify-between items-center text-sm">
+            <span className="text-gray-300">Current Deposits:</span>
+            <span className="text-white font-bold">
+              ₱{formatNumberLocale(depositLimit)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center text-sm mt-2">
+            <span className="text-gray-300">Daily Limit:</span>
+            <span className="text-red-400 font-bold">
+              ₱{formatNumberLocale(20000)}
+            </span>
+          </div>
+        </div>
 
         <FormField
           control={control}
@@ -292,18 +328,6 @@ const DashboardDepositModalDeposit = () => {
           )}
         />
 
-        {/* {selectedMerchant?.merchant_qr_attachment && (
-                <div className="flex flex-col gap-2 justify-center items-center">
-                  <p className="text-lg font-bold">QR CODE</p>
-                  <Image
-                    src={selectedMerchant.merchant_qr_attachment}
-                    alt="QR Code"
-                    width={200}
-                    height={200}
-                  />
-                </div>
-              )} */}
-
         <FormField
           control={control}
           name="file"
@@ -330,7 +354,7 @@ const DashboardDepositModalDeposit = () => {
           <Button
             variant="card"
             className=" font-black text-2xl rounded-full p-5"
-            disabled={isSubmitting || !canUserDeposit}
+            disabled={isSubmitting || !canUserDeposit || isDepositLimited}
             type="submit"
           >
             {isSubmitting ? <Loader2 className="animate-spin" /> : null} Submit

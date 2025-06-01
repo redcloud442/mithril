@@ -126,6 +126,7 @@ const LegionBountyTable = () => {
     cachedIndirectReferral.current = {};
     setIsFetchingList(true);
     setRefreshCooldown(60);
+    setActivePage(1);
     fetchAdminRequest();
   };
 
