@@ -333,6 +333,9 @@ export const useAdminTopUpApprovalColumns = (
           "company_deposit_request_attachment"
         ) as string;
 
+        const attachmentUrls =
+          row.original.company_deposit_request_attachment_urls;
+
         return (
           <Dialog>
             <DialogTrigger asChild>
@@ -345,16 +348,31 @@ export const useAdminTopUpApprovalColumns = (
                 <DialogTitle>Attachment</DialogTitle>
               </DialogHeader>
               <div className="flex justify-center items-center">
-                <Image
-                  key={attachmentUrl}
-                  src={attachmentUrl}
-                  alt="Attachment Preview"
-                  width={600}
-                  height={600}
-                  placeholder="blur"
-                  blurDataURL={attachmentUrl}
-                  className="object-contain w-[600px] h-[600px]"
-                />
+                {attachmentUrl ? (
+                  <Image
+                    key={attachmentUrl}
+                    src={attachmentUrl}
+                    alt="Attachment Preview"
+                    width={600}
+                    height={600}
+                    placeholder="blur"
+                    blurDataURL={attachmentUrl}
+                    className="object-contain w-[600px] h-[600px]"
+                  />
+                ) : (
+                  <div className="flex gap-2">
+                    {attachmentUrls.map((url) => (
+                      <Image
+                        key={url}
+                        width={600}
+                        height={600}
+                        src={url}
+                        alt="Attachment Preview"
+                        className="object-contain w-[300px] h-[300px]"
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
               <DialogClose asChild>
                 <Button variant="secondary">Close</Button>

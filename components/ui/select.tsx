@@ -26,7 +26,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <Triangle className="h-5 w-6 rotate-180 opacity-50 fill-current text-orange-500 fixed right-20" />
+      <Triangle className="h-5 w-6 rotate-180 opacity-50 fill-current text-orange-500 absolute right-1" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));

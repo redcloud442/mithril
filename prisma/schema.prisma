@@ -175,6 +175,7 @@ model company_deposit_request_table {
   company_deposit_request_account      String
   company_deposit_request_name         String
   company_deposit_request_attachment   String
+  company_deposit_request_attachment_urls String[] @db.Text
   company_deposit_request_reject_note  String?
 
 
