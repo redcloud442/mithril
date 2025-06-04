@@ -7,6 +7,38 @@ UPDATE storage.buckets SET public = true;
 
 CREATE EXTENSION IF NOT EXISTS plv8;
 
+-- Repeat this in batches (e.g., 500 rows at a time)
+WITH rows_to_update AS (
+  SELECT *
+  FROM company_schema.company_deposit_request_table
+  WHERE company_deposit_request_attachment LIKE 'https://cdn.omnixglobal.io%'
+  LIMIT 500
+)
+UPDATE company_schema.company_deposit_request_table
+SET company_deposit_request_attachment = REPLACE(
+  company_deposit_request_attachment,
+  'https://cdn.omnixglobal.io',
+  'https://cdn.omnix-global.com'
+)
+FROM rows_to_update
+WHERE company_schema.company_deposit_request_table.company_deposit_request_id = rows_to_update.company_deposit_request_id;
+
+WITH rows_to_update AS (
+  SELECT *
+  FROM user_schema.user_table
+  WHERE user_profile_picture LIKE 'https://cdn.omnixglobal.io%'
+  LIMIT 500
+)
+UPDATE user_schema.user_table
+SET user_profile_picture = REPLACE(
+  user_profile_picture,
+  'https://cdn.omnixglobal.io',
+  'https://cdn.omnix-global.com'
+)
+FROM rows_to_update
+WHERE user_schema.user_table.user_id = rows_to_update.user_id;
+
+
 
 DROP view company_schema.dashboard_earnings_summary;
 CREATE OR REPLACE VIEW company_schema.dashboard_earnings_summary AS

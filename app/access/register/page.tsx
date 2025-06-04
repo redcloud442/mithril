@@ -52,7 +52,13 @@ const Page = async ({
     redirect("/access/login");
   }
 
-  const { code } = await registerUserCodeSchema.parseAsync({ CODE });
+  const { data, error } = await registerUserCodeSchema.safeParseAsync({
+    code: CODE,
+  });
+
+  if (error) {
+    redirect("/access/login");
+  }
 
   const user = await prisma.user_table.findFirst({
     where: {
@@ -60,7 +66,7 @@ const Page = async ({
         some: {
           company_referral_link_table: {
             some: {
-              company_referral_code: code,
+              company_referral_code: data?.code,
             },
           },
           AND: [
@@ -82,7 +88,10 @@ const Page = async ({
 
   return (
     <Suspense fallback={<Loading />}>
-      <RegisterPage referralLink={code} userName={user?.user_username || ""} />
+      <RegisterPage
+        referralLink={data?.code}
+        userName={user?.user_username || ""}
+      />
     </Suspense>
   );
 };
