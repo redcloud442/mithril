@@ -56,7 +56,7 @@ export const updateTopUpStatus = async (params: {
 
 export const handleDepositRequest = async (params: {
   TopUpFormValues: DepositRequestFormValues;
-  publicUrl: string;
+  publicUrl: string[];
 }) => {
   const response = await fetch(`/api/v1/deposit`, {
     method: "POST",

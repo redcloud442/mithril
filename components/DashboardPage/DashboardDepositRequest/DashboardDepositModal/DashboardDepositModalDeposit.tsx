@@ -120,22 +120,29 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
 
       const sanitizedData = escapeFormData(data);
       const file = data.file;
+      const filePaths: string[] = [];
 
-      const filePath = `uploads/${Date.now()}_${file.name}`;
+      await Promise.all(
+        file.map(async (file) => {
+          const filePath = `uploads/${Date.now()}_${file.name}`;
 
-      const { error: uploadError } = await supabaseClient.storage
-        .from("REQUEST_ATTACHMENTS")
-        .upload(filePath, file, { upsert: true });
+          const { error: uploadError } = await supabaseClient.storage
+            .from("REQUEST_ATTACHMENTS")
+            .upload(filePath, file, { upsert: true });
 
-      if (uploadError) {
-        throw new Error("File upload failed.");
-      }
+          if (uploadError) {
+            throw new Error("File upload failed.");
+          }
 
-      const publicUrl = `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnixglobal.io"}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`;
+          filePaths.push(
+            `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnixglobal.io"}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`
+          );
+        })
+      );
 
       await handleDepositRequest({
         TopUpFormValues: sanitizedData,
-        publicUrl,
+        publicUrl: filePaths,
       });
 
       toast({
@@ -344,7 +351,7 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
           )}
         />
 
-        {file && (
+        {file && file.length > 0 && (
           <h1 className="rounded-md h-10 w-full border-2 border-orange-500 bg-orange-950 flex items-center justify-center text-green-500">
             FILE UPLOADED SUCCESSFULLY
           </h1>

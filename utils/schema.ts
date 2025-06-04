@@ -17,13 +17,18 @@ export const depositRequestSchema = z.object({
   accountName: z.string().trim().min(1, "Field is required"),
   accountNumber: z.string().trim().min(1, "Field is required"),
   file: z
-    .instanceof(File)
-    .refine((file) => !!file, { message: "File is required" })
+    .array(z.instanceof(File))
+    .min(1, { message: "Please submit at least 1 receipt" })
     .refine(
-      (file) =>
-        ["image/jpeg", "image/png", "image/jpg"].includes(file.type) &&
-        file.size <= 12 * 1024 * 1024, // 12MB limit
-      { message: "File must be a valid image and less than 12MB." }
+      (files) =>
+        files.every(
+          (file) =>
+            ["image/jpeg", "image/png", "image/jpg"].includes(file.type) &&
+            file.size <= 12 * 1024 * 1024
+        ),
+      {
+        message: "File must be a valid image and less than 12MB.",
+      }
     ),
 });
 

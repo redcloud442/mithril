@@ -6,7 +6,7 @@ const WithdrawPage = () => {
     <ReusableCard
       type="user"
       title="Withdraw Request"
-      className="flex items-start justify-center h-full"
+      className="flex items-start justify-center h-full p-0 sm:p-4"
     >
       <DashboardWithdrawModalWithdraw />
     </ReusableCard>

@@ -49,7 +49,7 @@ const ReusableCard = ({
         {(title || description) && (
           <CardHeader>
             {title && (
-              <CardTitle className="text-white text-3xl stroke-text-orange font-bold text-center">
+              <CardTitle className="text-white text-2xl sm:text-3xl stroke-text-orange font-bold text-center">
                 {title}
               </CardTitle>
             )}

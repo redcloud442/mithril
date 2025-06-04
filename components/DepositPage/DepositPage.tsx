@@ -20,7 +20,7 @@ const DepositPage = ({ depositLimit }: DepositLimit) => {
         <ReusableCard
           type="user"
           title="Deposit Request"
-          className="flex items-start justify-center h-full"
+          className="flex items-start justify-center h-full p-0 sm:p-4"
         >
           <DashboardDepositModalDeposit depositLimit={depositLimit} />
         </ReusableCard>
