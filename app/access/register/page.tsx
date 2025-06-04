@@ -1,5 +1,6 @@
 import RegisterPage from "@/components/registerPage/registerPage";
 import prisma from "@/utils/prisma";
+import { registerUserCodeSchema } from "@/utils/schema";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import Loading from "../loading";
@@ -16,14 +17,14 @@ export async function generateMetadata({
     description:
       "Join Omnix Global now — your path to digital prosperity begins here!",
     openGraph: {
-      url: `https://www.omnixglobal.io/access/register?CODE=${CODE}`,
+      url: `https://www.omnix-global.com/access/register?CODE=${CODE}`,
       title: `Join Omnix Global Now!`,
       description:
         "Unlock exclusive rewards and opportunities by joining Omnix Global today.",
-      siteName: "www.omnixglobal.io",
+      siteName: "www.omnix-global.com",
       images: [
         {
-          url: "https://www.omnixglobal.io/assets/icons/logo.ico",
+          url: "https://www.omnix-global.com/assets/icons/logo.ico",
           width: 1200,
           height: 630,
           alt: "Omnix Global Registration Banner",
@@ -35,7 +36,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `Join Omnix Global Now! Invited by ${CODE}`,
       description: "Be part of the Omnix Global revolution — register today.",
-      images: ["https://www.omnixglobal.io/assets/icons/logo.ico"], // Same or different from OG
+      images: ["https://www.omnix-global.com/assets/icons/logo.ico"], // Same or different from OG
     },
   };
 }
@@ -51,13 +52,15 @@ const Page = async ({
     redirect("/access/login");
   }
 
+  const { code } = await registerUserCodeSchema.parseAsync({ CODE });
+
   const user = await prisma.user_table.findFirst({
     where: {
       company_member_table: {
         some: {
           company_referral_link_table: {
             some: {
-              company_referral_code: CODE,
+              company_referral_code: code,
             },
           },
           AND: [
@@ -79,7 +82,7 @@ const Page = async ({
 
   return (
     <Suspense fallback={<Loading />}>
-      <RegisterPage referralLink={CODE} userName={user?.user_username || ""} />
+      <RegisterPage referralLink={code} userName={user?.user_username || ""} />
     </Suspense>
   );
 };

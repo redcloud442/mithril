@@ -125,6 +125,7 @@ export const protectionMemberUser = async (ip?: string) => {
             company_referral_link_table: {
               select: {
                 company_referral_link: true,
+                company_referral_code: true,
               },
             },
           },

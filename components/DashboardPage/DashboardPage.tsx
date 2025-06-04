@@ -127,14 +127,18 @@ const DashboardPage = ({ packages }: Props) => {
               <div className="space-y-1">
                 <div
                   onClick={() =>
-                    handleReferralLink(referral?.company_referral_link || "")
+                    handleReferralLink(
+                      "https://www.omnix-global.com/access/register?CODE=" +
+                        referral?.company_referral_code
+                    )
                   }
                   className="text-xl text-center font-bold border-2 p-1 bg-orange-950 border-orange-500 cursor-pointer"
                 >
                   CLICK HERE TO COPY REFERRAL LINK
                 </div>
                 <div className="text-[11px] font-bold border-2 p-1 bg-orange-950 border-orange-500 text-center">
-                  {referral?.company_referral_link}
+                  https://www.omnix-global.com/access/register?CODE=
+                  {referral?.company_referral_code}
                 </div>
               </div>
             )}

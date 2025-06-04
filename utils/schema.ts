@@ -32,6 +32,14 @@ export const depositRequestSchema = z.object({
     ),
 });
 
+export const registerUserCodeSchema = z.object({
+  code: z.coerce
+    .string()
+    .min(6)
+    .max(6)
+    .regex(/^[A-Za-z0-9]$/, "Code must be exactly 6 letters or numbers")
+    .trim(),
+});
 export type DepositRequestFormValues = z.infer<typeof depositRequestSchema>;
 
 export const withdrawalFormSchema = z.object({

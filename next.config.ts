@@ -12,7 +12,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "cdn.omnixglobal.io",
+        hostname: "cdn.omnix-global.com",
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
@@ -22,7 +22,7 @@ const nextConfig = {
     return [
       {
         source: "/api/v1/:path*",
-        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://service-api.omnixglobal.io"}/api/v1/:path*`,
+        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://service-api.omnix-global.com"}/api/v1/:path*`,
       },
     ];
   },

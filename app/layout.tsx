@@ -9,11 +9,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Omnix Global",
     description: "Step into Omnix Global — Your path to digital prosperity.",
-    url: "https://www.omnixglobal.io",
+    url: "https://www.omnix-global.com",
     siteName: "Omnix Global",
     images: [
       {
-        url: "https://www.omnixglobal.io/assets/icons/logo.ico",
+        url: "https://www.omnix-global.com/assets/icons/logo.ico",
         width: 1200,
         height: 630,
         alt: "Omnix Global Banner",
