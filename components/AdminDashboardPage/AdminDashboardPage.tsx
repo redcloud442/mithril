@@ -247,6 +247,20 @@ const AdminDashboardPage = () => {
             adminDashboardDataByDate={adminDashboardByDate!}
           />
         </div>
+        <CardAmountAdmin
+          title="Total Withdrawal For Tomorrow"
+          value={
+            <>
+              <PhilippinePeso />
+              {formatNumberLocale(
+                adminDashboard?.totalWithdrawalForTomorrow ?? 0
+              )}
+            </>
+          }
+          description=""
+          descriptionClassName="text-sm text-gray-500"
+        />
+
         <div>
           <AdminDashboardChart
             chartData={adminDashboardByDate?.chartData ?? []}
