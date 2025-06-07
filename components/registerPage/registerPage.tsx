@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { PasswordInput } from "../ui/passwordInput";
+import PrivacyAgreementModal from "../UserAgreeement/UserAgreement";
 
 type Props = {
   referralLink: string;
@@ -403,6 +404,10 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
             >
               Register
             </Button>
+          </div>
+          <div className="flex flex-col items-center justify-center text-white">
+            <span>By registering, you agree to the user&apos;s</span>
+            <PrivacyAgreementModal />
           </div>
         </form>
       </Form>
