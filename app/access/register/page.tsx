@@ -17,14 +17,14 @@ export async function generateMetadata({
     description:
       "Join Omnix Global now — your path to digital prosperity begins here!",
     openGraph: {
-      url: `https://www.omnix-global.com/access/register?CODE=${CODE}`,
+      url: `https://www.omnixglobal.io/access/register?CODE=${CODE}`,
       title: `Join Omnix Global Now!`,
       description:
         "Unlock exclusive rewards and opportunities by joining Omnix Global today.",
-      siteName: "www.omnix-global.com",
+      siteName: "www.omnixglobal.io",
       images: [
         {
-          url: "https://www.omnix-global.com/assets/icons/logo.ico",
+          url: "https://www.omnixglobal.io/assets/icons/logo.ico",
           width: 1200,
           height: 630,
           alt: "Omnix Global Registration Banner",
@@ -36,7 +36,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: `Join Omnix Global Now! Invited by ${CODE}`,
       description: "Be part of the Omnix Global revolution — register today.",
-      images: ["https://www.omnix-global.com/assets/icons/logo.ico"], // Same or different from OG
+      images: ["https://www.omnixglobal.io/assets/icons/logo.ico"], // Same or different from OG
     },
   };
 }
