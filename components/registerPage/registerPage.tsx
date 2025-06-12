@@ -12,7 +12,7 @@ import { CheckIcon, XSquareIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { Resolver, useController, useForm } from "react-hook-form";
-import Turnstile, { BoundTurnstileObject } from "react-turnstile";
+import { BoundTurnstileObject } from "react-turnstile";
 import ReusableCard from "../ui/card-reusable";
 import {
   Form,
@@ -115,18 +115,18 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
       });
     }
 
-    if (!captchaToken) {
-      if (captcha.current) {
-        captcha.current.reset();
-        captcha.current.execute();
-      }
+    // if (!captchaToken) {
+    //   if (captcha.current) {
+    //     captcha.current.reset();
+    //     captcha.current.execute();
+    //   }
 
-      return toast({
-        title: "Please wait",
-        description: "Refreshing CAPTCHA, please try again.",
-        variant: "destructive",
-      });
-    }
+    //   return toast({
+    //     title: "Please wait",
+    //     description: "Refreshing CAPTCHA, please try again.",
+    //     variant: "destructive",
+    //   });
+    // }
 
     const sanitizedData = escapeFormData(data);
 
@@ -384,7 +384,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
               </FormItem>
             )}
           />
-
+          {/* 
           <div className="w-full flex flex-1 justify-center z-50">
             <Turnstile
               size="flexible"
@@ -393,7 +393,7 @@ const RegisterPage = ({ referralLink, userName }: Props) => {
                 setCaptchaToken(token);
               }}
             />
-          </div>
+          </div> */}
 
           <div className="w-full flex justify-center">
             <Button

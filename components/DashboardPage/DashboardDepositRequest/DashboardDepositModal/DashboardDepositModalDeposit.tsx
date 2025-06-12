@@ -135,7 +135,7 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
           }
 
           filePaths.push(
-            `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnix-global.com"}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`
+            `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnixglobal.io"}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`
           );
         })
       );

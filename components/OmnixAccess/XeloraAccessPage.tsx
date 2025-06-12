@@ -20,7 +20,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import Turnstile, { BoundTurnstileObject } from "react-turnstile";
+import { BoundTurnstileObject } from "react-turnstile";
 import ReusableCard from "../ui/card-reusable";
 import {
   Form,
@@ -86,13 +86,13 @@ const OmnixAccess = () => {
 
   const handleSignIn = async (data: LoginFormValues) => {
     try {
-      if (!captchaToken) {
-        return toast({
-          title: "Please wait",
-          description: "Captcha is required.",
-          variant: "destructive",
-        });
-      }
+      // if (!captchaToken) {
+      //   return toast({
+      //     title: "Please wait",
+      //     description: "Captcha is required.",
+      //     variant: "destructive",
+      //   });
+      // }
       setIsLoading(true);
 
       const sanitizedData = escapeFormData(data);
@@ -228,13 +228,13 @@ const OmnixAccess = () => {
               )}
             />
 
-            <Turnstile
+            {/* <Turnstile
               size="flexible"
               sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
               onVerify={(token: string) => {
                 setCaptchaToken(token);
               }}
-            />
+            /> */}
             <div className="w-full flex justify-center">
               <Button
                 variant="card"

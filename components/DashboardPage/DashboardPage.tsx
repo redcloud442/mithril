@@ -155,7 +155,7 @@ const DashboardPage = ({ packages }: Props) => {
                 <div
                   onClick={() =>
                     handleReferralLink(
-                      "https://www.omnix-global.com/access/register?CODE=" +
+                      "https://www.omnixglobal.io/access/register?CODE=" +
                         referral?.company_referral_code
                     )
                   }
@@ -164,7 +164,7 @@ const DashboardPage = ({ packages }: Props) => {
                   CLICK HERE TO COPY REFERRAL LINK
                 </div>
                 <div className="text-[11px] font-bold border-2 p-1 bg-orange-950 border-orange-500 text-center">
-                  https://www.omnix-global.com/access/register?CODE=
+                  https://www.omnixglobal.io/access/register?CODE=
                   {referral?.company_referral_code}
                 </div>
               </div>
