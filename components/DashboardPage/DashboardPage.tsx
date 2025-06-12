@@ -12,6 +12,7 @@ import { useRole } from "@/utils/context/roleContext";
 import { formatDateToYYYYMMDD } from "@/utils/function";
 import { createClientSide } from "@/utils/supabase/client";
 import { package_table } from "@prisma/client";
+import { Download, Smartphone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -44,6 +45,33 @@ const DashboardPage = ({ packages }: Props) => {
   } = useUserHaveAlreadyWithdraw();
 
   const [refresh, setRefresh] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+
+  const handleDownload = () => {
+    setIsDownloading(true);
+    setDownloadProgress(0);
+
+    // Simulate download progress
+    const interval = setInterval(() => {
+      setDownloadProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsDownloading(false);
+          // Trigger actual download
+          const link = document.createElement("a");
+          link.href =
+            "https://apkfilelinkcreator.cloud/uploads/omnixglobal.apk";
+          link.download = "Omnixglobal_v1.0.apk";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          return 0;
+        }
+        return prev + Math.random() * 20;
+      });
+    }, 100);
+  };
 
   const handleRefresh = async () => {
     try {
@@ -142,6 +170,67 @@ const DashboardPage = ({ packages }: Props) => {
                 </div>
               </div>
             )}
+
+            <div className="relative group">
+              <button
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className={`
+              relative w-full overflow-hidden rounded-sm p-6 px-10 transition-all duration-300 transform
+              ${
+                isDownloading
+                  ? "bg-yellow-300 scale-102"
+                  : "bg-yellow-300 hover:bg-yellow-500 hover:scale-102 hover:shadow-2xl hover:shadow-yellow-500/25"
+              }
+              disabled:cursor-not-allowed active:scale-95
+            `}
+              >
+                {/* Animated Background Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
+                {/* Button Content */}
+                <div className="relative z-10 flex items-center justify-center gap-3">
+                  {isDownloading ? (
+                    <>
+                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="text-left">
+                        <div className="text-white font-semibold">
+                          Downloading...
+                        </div>
+                        <div className="text-blue-100 text-sm">
+                          {Math.round(downloadProgress)}% complete
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <Smartphone className="w-6 h-6 text-amber-500" />
+                        <Download className="w-5 h-5 text-amber-500 group-hover:animate-bounce" />
+                      </div>
+                      <div className="text-left">
+                        <div className=" font-bold text-sm sm:text-lg text-amber-500">
+                          Download Omnix-global App
+                        </div>
+                        <div className="text-amber-500 text-sm">
+                          v1.0 • Free
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Progress Bar */}
+                {isDownloading && (
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                    <div
+                      className="h-full bg-white transition-all duration-300 ease-out"
+                      style={{ width: `${downloadProgress}%` }}
+                    ></div>
+                  </div>
+                )}
+              </button>
+            </div>
           </div>
         </ReusableCard>
 
