@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Bell,
   BookOpen,
   File,
   HistoryIcon,
@@ -131,6 +132,11 @@ const data = {
           title: "Export",
           url: "/admin/export",
           icon: File,
+        },
+        {
+          title: "Notification",
+          url: "/admin/notification",
+          icon: Bell,
         },
       ],
     },

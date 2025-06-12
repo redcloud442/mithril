@@ -48,18 +48,18 @@ const LoginPage = () => {
 
   const handleSignIn = async (data: LoginFormValues) => {
     try {
-      if (!captchaToken) {
-        if (captcha.current) {
-          captcha.current.reset();
-          captcha.current.execute();
-        }
+      // if (!captchaToken) {
+      //   if (captcha.current) {
+      //     captcha.current.reset();
+      //     captcha.current.execute();
+      //   }
 
-        return toast({
-          title: "Please wait",
-          description: "Refreshing CAPTCHA, please try again.",
-          variant: "destructive",
-        });
-      }
+      //   return toast({
+      //     title: "Please wait",
+      //     description: "Refreshing CAPTCHA, please try again.",
+      //     variant: "destructive",
+      //   });
+      // }
 
       const sanitizedData = escapeFormData(data);
 

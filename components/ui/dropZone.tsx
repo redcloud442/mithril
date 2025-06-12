@@ -3,11 +3,13 @@ import React, { useCallback, useState } from "react";
 
 type FileUploaderProps = {
   label?: string;
-  onFileChange?: (files: File[]) => void;
+  type?: "single" | "multiple";
+  onFileChange?: (files: File[] | File) => void;
 };
 
 const FileUploader: React.FC<FileUploaderProps> = ({
   label = "Upload Receipts",
+  type = "multiple",
   onFileChange = () => {},
 }) => {
   const [files, setFiles] = useState<File[]>([]);
@@ -15,16 +17,22 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const [error, setError] = useState("");
 
   const validateFiles = (newFiles: File[]) => {
-    if (newFiles.length < 1) {
-      setError("Please select at least 1 file");
-      return false;
-    }
-    if (newFiles.length > 3) {
-      setError("Maximum 3 files allowed");
+    if (type === "single" && newFiles.length > 1) {
+      setError("Only one file is allowed");
       return false;
     }
 
-    // Check file types - matching your original (images only)
+    if (type === "multiple") {
+      if (newFiles.length < 1) {
+        setError("Please select at least 1 file");
+        return false;
+      }
+      if (newFiles.length > 3) {
+        setError("Maximum 3 files allowed");
+        return false;
+      }
+    }
+
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
     const invalidFiles = newFiles.filter(
       (file) => !allowedTypes.includes(file.type)
@@ -35,7 +43,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       return false;
     }
 
-    // Check file sizes (max 10MB each)
     const oversizedFiles = newFiles.filter(
       (file) => file.size > 10 * 1024 * 1024
     );
@@ -51,9 +58,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const handleFileSelect = (selectedFiles: FileList | null) => {
     if (!selectedFiles) return;
     const fileArray = Array.from(selectedFiles);
+
     if (validateFiles(fileArray)) {
-      setFiles(fileArray);
-      onFileChange(fileArray);
+      const finalFiles = type === "single" ? [fileArray[0]] : fileArray;
+      setFiles(finalFiles);
+      onFileChange(type === "single" ? finalFiles[0] : finalFiles);
     }
   };
 
@@ -67,17 +76,20 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     setIsDragActive(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragActive(false);
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    handleFileSelect(droppedFiles as unknown as FileList);
-  }, []);
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragActive(false);
+      const droppedFiles = Array.from(e.dataTransfer.files);
+      handleFileSelect(droppedFiles as unknown as FileList);
+    },
+    [type]
+  );
 
   const removeFile = (index: number) => {
     const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
-    onFileChange(newFiles);
+    onFileChange(type === "single" ? newFiles[0] || null : newFiles);
     setError("");
   };
 
@@ -105,18 +117,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         </p>
       </div>
 
-      {/* Drop Zone */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`
           relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 ease-in-out
-          ${
-            isDragActive
-              ? "border-orange-400 bg-orange-100 scale-105"
-              : "border-orange-500 bg-orange-950 hover:border-orange-400 hover:bg-orange-900"
-          }
+          ${isDragActive ? "border-orange-400 bg-orange-100 scale-105" : "border-orange-500 bg-orange-950 hover:border-orange-400 hover:bg-orange-900"}
           ${files.length > 0 ? "border-orange-400 bg-orange-900" : ""}
         `}
         onClick={() => document.getElementById("file-input")?.click()}
@@ -124,8 +131,8 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         <input
           id="file-input"
           type="file"
-          multiple
           accept="image/*"
+          multiple={type === "multiple"}
           onChange={(e) => handleFileSelect(e.target.files)}
           className="hidden"
         />
@@ -136,31 +143,29 @@ const FileUploader: React.FC<FileUploaderProps> = ({
               <Upload
                 className={`w-12 h-12 mx-auto ${isDragActive ? "text-orange-400" : "text-orange-300"}`}
               />
-              <div>
-                <h3 className="text-sm sm:text-lg font-bold text-orange-100">
-                  {isDragActive
-                    ? "Drop receipts here"
-                    : "CLICK HERE TO UPLOAD 1–3 RECEIPTS"}
-                </h3>
-              </div>
+              <h3 className="text-sm sm:text-lg font-bold text-orange-100">
+                {isDragActive
+                  ? "Drop your file(s) here"
+                  : type === "single"
+                    ? "CLICK TO UPLOAD 1 FILE"
+                    : "CLICK TO UPLOAD 1–3 FILES"}
+              </h3>
             </>
           ) : (
             <>
               <Check className="w-12 h-12 mx-auto text-orange-400" />
-              <div>
-                <h3 className="text-sm sm:text-lg font-bold text-orange-100">
-                  {files.length} receipt{files.length > 1 ? "s" : ""} selected
-                </h3>
-                <p className="text-orange-200 mt-1">
-                  Click to add more or replace files
-                </p>
-              </div>
+              <h3 className="text-sm sm:text-lg font-bold text-orange-100">
+                {files.length} file{files.length > 1 ? "s" : ""} selected
+              </h3>
+              <p className="text-orange-200 mt-1">
+                Click to {type === "single" ? "replace" : "add more or replace"}{" "}
+                file{type === "multiple" && "s"}
+              </p>
             </>
           )}
         </div>
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="flex items-center space-x-2 p-3 bg-orange-100 border border-orange-300 rounded-lg">
           <AlertCircle className="w-5 h-5 text-orange-600" />
@@ -168,7 +173,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         </div>
       )}
 
-      {/* File List */}
       {files.length > 0 && (
         <div className="space-y-2">
           <h4 className="text-sm font-medium text-orange-800">
@@ -207,9 +211,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({
         </div>
       )}
 
-      {/* File Count Indicator */}
       <div className="flex justify-between items-center text-xs text-gray-500">
-        <span>{files.length}/3 files selected</span>
+        <span>
+          {files.length}/{type === "single" ? 1 : 3} file
+          {type === "multiple" && "s"} selected
+        </span>
       </div>
     </div>
   );

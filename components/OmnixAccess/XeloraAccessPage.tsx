@@ -86,13 +86,13 @@ const OmnixAccess = () => {
 
   const handleSignIn = async (data: LoginFormValues) => {
     try {
-      if (!captchaToken) {
-        return toast({
-          title: "Please wait",
-          description: "Captcha is required.",
-          variant: "destructive",
-        });
-      }
+      // if (!captchaToken) {
+      //   return toast({
+      //     title: "Please wait",
+      //     description: "Captcha is required.",
+      //     variant: "destructive",
+      //   });
+      // }
       setIsLoading(true);
 
       const sanitizedData = escapeFormData(data);

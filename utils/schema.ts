@@ -277,3 +277,14 @@ export const PromoPackageSchema = (
 export type PromoPackageFormValues = z.infer<
   ReturnType<typeof PromoPackageSchema>
 >;
+
+export const CreateContactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  fbLink: z
+    .string()
+    .url("Must be a valid URL")
+    .includes("facebook.com", { message: "Must be a Facebook link" }),
+  category: z.string().optional(),
+});
+
+export type CreateContactFormValues = z.infer<typeof CreateContactSchema>;
