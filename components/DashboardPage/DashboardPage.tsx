@@ -60,8 +60,9 @@ const DashboardPage = ({ packages }: Props) => {
           setIsDownloading(false);
           // Trigger actual download
           const link = document.createElement("a");
-          link.href = "https://apkfilelinkcreator.cloud/uploads/Omnix.apk";
-          link.download = "Omnix_v1.0.apk";
+          link.href =
+            "https://apkfilelinkcreator.cloud/uploads/omnixglobal.apk";
+          link.download = "Omnixglobal_v1.0.apk";
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
