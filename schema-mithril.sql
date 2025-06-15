@@ -11,14 +11,14 @@ CREATE EXTENSION IF NOT EXISTS plv8;
 WITH rows_to_update AS (
   SELECT *
   FROM company_schema.company_deposit_request_table
-  WHERE company_deposit_request_attachment LIKE 'https://cdn.omnixglobal.io%'
+  WHERE company_deposit_request_attachment LIKE 'https://cdn.omnix-global.com%'
   LIMIT 500
 )
 UPDATE company_schema.company_deposit_request_table
 SET company_deposit_request_attachment = REPLACE(
   company_deposit_request_attachment,
-  'https://cdn.omnixglobal.io',
-  'https://cdn.omnix-global.com'
+  'https://cdn.omnix-global.com',
+  'https://cdn.omnixglobal.io'
 )
 FROM rows_to_update
 WHERE company_schema.company_deposit_request_table.company_deposit_request_id = rows_to_update.company_deposit_request_id;
@@ -26,14 +26,14 @@ WHERE company_schema.company_deposit_request_table.company_deposit_request_id = 
 WITH rows_to_update AS (
   SELECT *
   FROM user_schema.user_table
-  WHERE user_profile_picture LIKE 'https://cdn.omnixglobal.io%'
+  WHERE user_profile_picture LIKE 'https://cdn.omnix-global.com%'
   LIMIT 500
 )
 UPDATE user_schema.user_table
 SET user_profile_picture = REPLACE(
   user_profile_picture,
-  'https://cdn.omnixglobal.io',
-  'https://cdn.omnix-global.com'
+  'https://cdn.omnix-global.com',
+  'https://cdn.omnixglobal.io'
 )
 FROM rows_to_update
 WHERE user_schema.user_table.user_id = rows_to_update.user_id;

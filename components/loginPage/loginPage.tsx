@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import Turnstile, { BoundTurnstileObject } from "react-turnstile";
+import { BoundTurnstileObject } from "react-turnstile";
 import ReusableCard from "../ui/card-reusable";
 import {
   Form,
@@ -147,7 +147,7 @@ const LoginPage = () => {
               </FormItem>
             )}
           />
-          <div className="w-full flex items-center justify-center">
+          {/* <div className="w-full flex items-center justify-center">
             <Turnstile
               size="flexible"
               sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
@@ -155,7 +155,7 @@ const LoginPage = () => {
                 setCaptchaToken(token);
               }}
             />
-          </div>
+          </div> */}
           <div className="w-full flex justify-center">
             <Button
               variant="card"

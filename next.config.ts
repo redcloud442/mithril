@@ -16,13 +16,19 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.omnixglobal.io",
+        port: "",
+        pathname: "/storage/v1/object/public/**",
+      },
     ],
   },
   async rewrites() {
     return [
       {
         source: "/api/v1/:path*",
-        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://service-api.omnix-global.com"}/api/v1/:path*`,
+        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://service-api.omnixglobal.io"}/api/v1/:path*`,
       },
       {
         source: "/api/v2/:path*",
