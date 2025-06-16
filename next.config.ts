@@ -32,7 +32,7 @@ const nextConfig = {
       },
       {
         source: "/api/v2/:path*",
-        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:4000" : "https://service-socket.omnix-global.com"}/api/v2/:path*`,
+        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:4000" : "https://service-socket.omnixglobal.io"}/api/v2/:path*`,
       },
     ];
   },
