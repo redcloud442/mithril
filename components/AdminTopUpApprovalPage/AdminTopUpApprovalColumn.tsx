@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { logError } from "@/services/Error/ErrorLogs";
+import { SendNotification } from "@/services/Notification/Notification";
 import { updateTopUpStatus } from "@/services/TopUp/Admin";
 import { formatDateToYYYYMMDD, formatTime } from "@/utils/function";
 import { createClientSide } from "@/utils/supabase/client";
@@ -50,11 +50,33 @@ export const useAdminTopUpApprovalColumns = (
     try {
       setIsLoading(true);
 
-      await updateTopUpStatus({
+      const { updatedRequest } = await updateTopUpStatus({
         status,
         requestId,
         note,
       });
+
+      const {
+        data: { session },
+      } = await supabaseClient.auth.getSession();
+      const token = session?.access_token || "";
+
+      if (status === "APPROVED") {
+        const Notification = {
+          mode: "sendToUser" as const,
+          userIds: [
+            updatedRequest.company_member_requestor.company_member_user_id,
+          ],
+          title: `🎉 Congratulations, Omnixian! 🎉`,
+          description: `Your payout has been successfully processed! 💸
+Thank you for choosing OMNIX as your platform toward success and financial freedom. 🙌
+🔥 Dahil DITO SA OMNIX, IKAW ANG PANALO! 🔥
+`,
+          imageUrl: updatedRequest.company_deposit_request_attachment_urls,
+        };
+
+        await SendNotification({ ...Notification }, token);
+      }
 
       setRequestData((prev) => {
         if (!prev) return prev;
@@ -114,12 +136,6 @@ export const useAdminTopUpApprovalColumns = (
       reset();
     } catch (e) {
       if (e instanceof Error) {
-        await logError(supabaseClient, {
-          errorMessage: e.message,
-          stackTrace: e.stack,
-          stackPath:
-            "components/AdminTopUpApprovalPage/AdminTopUpApprovalColumn.tsx",
-        });
         toast({
           title: `Invalid Request`,
           description: `${e.message}`,

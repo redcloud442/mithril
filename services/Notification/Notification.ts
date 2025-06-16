@@ -4,7 +4,7 @@ export const SendNotification = async (
     userIds: string[];
     title: string;
     description: string;
-    imageUrl: string;
+    imageUrl: string[];
   },
   token: string
 ) => {
@@ -30,7 +30,7 @@ export const BroadcastNotification = async (
     userIds: string[];
     title: string;
     description: string;
-    imageUrl: string;
+    imageUrl: string[];
   },
   token: string
 ) => {
@@ -74,7 +74,7 @@ export const getNotifications = async (
       notification_id: string;
       notification_title: string;
       notification_message: string;
-      notification_image_url: string;
+      notification_image_url: string[];
       notification_created_at: string;
       notification_is_read: boolean;
     }[];

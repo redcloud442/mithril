@@ -1,15 +1,17 @@
 import { AlertCircle, Check, File, Image, Upload, X } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 type FileUploaderProps = {
   label?: string;
   type?: "single" | "multiple";
+  reset?: boolean;
   onFileChange?: (files: File[] | File) => void;
 };
 
 const FileUploader: React.FC<FileUploaderProps> = ({
   label = "Upload Receipts",
   type = "multiple",
+  reset = false,
   onFileChange = () => {},
 }) => {
   const [files, setFiles] = useState<File[]>([]);
@@ -54,6 +56,12 @@ const FileUploader: React.FC<FileUploaderProps> = ({
     setError("");
     return true;
   };
+
+  useEffect(() => {
+    if (reset) {
+      setFiles([]);
+    }
+  }, [reset]);
 
   const handleFileSelect = (selectedFiles: FileList | null) => {
     if (!selectedFiles) return;

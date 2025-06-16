@@ -211,7 +211,7 @@ const FacebookContactManager = () => {
       if (context?.previousContacts) {
         queryClient.setQueryData(queryKey, context.previousContacts);
       }
-      console.log(error);
+
       toast({
         title: "Failed to create contact",
         description: "Please try again",
@@ -224,7 +224,7 @@ const FacebookContactManager = () => {
     },
   });
 
-  const { mutate: deleteContactMutation, isPending: isDeleting } = useMutation({
+  const { mutate: deleteContactMutation } = useMutation({
     mutationFn: async (contactId: string) => {
       const { data: token } = await supabaseClient.auth.getSession();
       return DeleteContact(contactId, token.session?.access_token || "");
@@ -262,7 +262,6 @@ const FacebookContactManager = () => {
       return { previousContacts };
     },
     onError: (_error, _contactId, context) => {
-      console.log(_error);
       if (context?.previousContacts) {
         queryClient.setQueryData(queryKey, context.previousContacts);
       }

@@ -13,16 +13,19 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getNotifications } from "@/services/Notification/Notification";
+import { useNotificationCountStore } from "@/store/useNotificationCount";
 import { useRole } from "@/utils/context/roleContext";
 import { createClientSide } from "@/utils/supabase/client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Bell, ChevronDown, Clock, Eye, Mail } from "lucide-react";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 const Page = () => {
   const supabase = createClientSide();
   const { profile } = useRole();
+  const { setNotificationToZero, notificationCount } =
+    useNotificationCountStore();
 
   const {
     data: notifications,
@@ -77,6 +80,12 @@ const Page = () => {
     },
     [allNotifications]
   );
+
+  useEffect(() => {
+    if (notificationCount > 0) {
+      setNotificationToZero();
+    }
+  }, [notificationCount]);
 
   return (
     <div className="min-h-screen p-4 md:p-6">
@@ -200,15 +209,20 @@ const Page = () => {
                                           {notification.notification_message}
                                         </DialogDescription>
                                       </DialogHeader>
-                                      <div className="mt-4">
-                                        <Image
-                                          src={
-                                            notification.notification_image_url
-                                          }
-                                          width={400}
-                                          height={400}
-                                          alt={notification.notification_title}
-                                        />
+                                      <div className="mt-4 flex flex-col gap-4">
+                                        {notification.notification_image_url.map(
+                                          (url) => (
+                                            <Image
+                                              key={url}
+                                              src={url}
+                                              width={400}
+                                              height={400}
+                                              alt={
+                                                notification.notification_title
+                                              }
+                                            />
+                                          )
+                                        )}
                                       </div>
                                     </ScrollArea>
                                   </DialogContent>

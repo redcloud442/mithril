@@ -40,8 +40,8 @@ const formSchema = z.object({
   userIds: z.string().array().optional(),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
-  imageUrl: z.string().optional(),
-  file: z.instanceof(File),
+  imageUrl: z.array(z.string()).optional(),
+  file: z.array(z.instanceof(File)).optional(),
 });
 
 type NotificationFormData = z.infer<typeof formSchema>;
@@ -54,7 +54,7 @@ const AdminNotificationPage = () => {
       mode: "sendToAll",
       title: "",
       description: "",
-      imageUrl: "",
+      imageUrl: [],
     },
   });
 
@@ -89,7 +89,7 @@ const AdminNotificationPage = () => {
             userIds: data.userIds || [],
             title: data.title,
             description: data.description,
-            imageUrl: data.imageUrl || "",
+            imageUrl: data.imageUrl || [],
           },
           token.session?.access_token || ""
         );
@@ -101,7 +101,7 @@ const AdminNotificationPage = () => {
             userIds: data.userIds || [],
             title: data.title,
             description: data.description,
-            imageUrl: data.imageUrl || "",
+            imageUrl: data.imageUrl || [],
           },
           token.session?.access_token || ""
         );
@@ -117,20 +117,26 @@ const AdminNotificationPage = () => {
 
   const onSubmit = async (values: NotificationFormData) => {
     const { file } = values;
-    let filePaths;
+    const filePaths: string[] = [];
     try {
-      if (file) {
-        const filePath = `uploads/${Date.now()}_${file.name}`;
+      if (file?.length) {
+        await Promise.all(
+          file.map(async (file) => {
+            const filePath = `uploads/${Date.now()}_${file.name}`;
 
-        const { error: uploadError } = await supabaseClient.storage
-          .from("REQUEST_ATTACHMENTS")
-          .upload(filePath, file, { upsert: true });
+            const { error: uploadError } = await supabaseClient.storage
+              .from("REQUEST_ATTACHMENTS")
+              .upload(filePath, file, { upsert: true });
 
-        if (uploadError) {
-          throw new Error("File upload failed.");
-        }
+            if (uploadError) {
+              throw new Error("File upload failed.");
+            }
 
-        filePaths = `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnix-global.com"}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`;
+            filePaths.push(
+              `${process.env.NODE_ENV === "development" ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}` : "https://cdn.omnixglobal.io"}/storage/v1/object/public/REQUEST_ATTACHMENTS/${filePath}`
+            );
+          })
+        );
       }
 
       const formattedValues = {
@@ -340,8 +346,8 @@ const AdminNotificationPage = () => {
                     <FormLabel>Image URL (optional)</FormLabel>
                     <FormControl>
                       <FileUpload
-                        type="single"
                         {...field}
+                        reset={form.formState.isSubmitSuccessful}
                         onFileChange={(file) => {
                           field.onChange(file as File);
                         }}
