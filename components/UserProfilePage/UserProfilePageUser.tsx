@@ -1,12 +1,9 @@
-import { UserRequestdata } from "@/utils/types";
+"use client";
 import ChangePasswordUser from "../UserAdminProfile/ChamgePasswordUser";
 import PersonalInformationUser from "../UserAdminProfile/PersonalInformationUser";
+import AddFacebookLink from "./AddFacebookLink";
 
-type Props = {
-  userProfile: UserRequestdata;
-};
-
-const UserProfilePageUser = ({ userProfile }: Props) => {
+const UserProfilePageUser = () => {
   return (
     <div className="mx-auto py-8">
       <div className="w-full flex flex-col gap-6 sm:p-10">
@@ -17,8 +14,9 @@ const UserProfilePageUser = ({ userProfile }: Props) => {
           </h1>
         </header>
 
-        <PersonalInformationUser userProfile={userProfile} />
-        <ChangePasswordUser userProfile={userProfile} />
+        <PersonalInformationUser />
+        <ChangePasswordUser />
+        <AddFacebookLink />
       </div>
     </div>
   );

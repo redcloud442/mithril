@@ -1,16 +1,18 @@
 "use client";
 import { useToast } from "@/hooks/use-toast";
 import { logError } from "@/services/Error/ErrorLogs";
-import { changeUserPassword } from "@/services/User/User";
 import { createClientSide } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { PasswordInput } from "../ui/passwordInput";
 
+import { updateUserFacebookLink } from "@/services/User/User";
 import { useRole } from "@/utils/context/roleContext";
-import { ChangePasswordFormValues, ChangePasswordSchema } from "@/utils/schema";
+import {
+  AddFacebookLinkFormValues,
+  AddFacebookLinkSchema,
+} from "@/utils/schema";
 import ReusableCard from "../ui/card-reusable";
 import {
   Form,
@@ -20,15 +22,16 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { Input } from "../ui/input";
 
-const ChangePasswordUser = () => {
+const AddFacebookLink = () => {
   const { toast } = useToast();
-  const { profile } = useRole();
-  const form = useForm<ChangePasswordFormValues>({
-    resolver: zodResolver(ChangePasswordSchema),
+  const { profile, setProfile } = useRole();
+
+  const form = useForm<AddFacebookLinkFormValues>({
+    resolver: zodResolver(AddFacebookLinkSchema),
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      facebookLink: "",
     },
   });
 
@@ -41,13 +44,17 @@ const ChangePasswordUser = () => {
 
   const supabaseClient = createClientSide();
 
-  const onSubmit = async (data: ChangePasswordFormValues) => {
+  const onSubmit = async (data: AddFacebookLinkFormValues) => {
     try {
-      await changeUserPassword({
+      await updateUserFacebookLink({
         userId: profile.user_id,
-        email: profile.user_email ?? "",
-        password: data.password,
+        facebookLink: data.facebookLink,
       });
+
+      setProfile((prev) => ({
+        ...prev,
+        user_fb_link: data.facebookLink ?? "",
+      }));
 
       reset();
 
@@ -70,7 +77,29 @@ const ChangePasswordUser = () => {
   };
 
   return (
-    <ReusableCard title="Change Password">
+    <ReusableCard title="Add Facebook Link">
+      <div className="p-4 space-y-2">
+        {profile.user_fb_link && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-white select-all">
+              FB LINK:
+            </span>
+            <span className="text-sm font-medium text-white select-all underline">
+              {profile.user_fb_link}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                navigator.clipboard.writeText(profile.user_fb_link ?? "")
+              }
+              className="text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
+              Copy
+            </button>
+          </div>
+        )}
+      </div>
+
       <Form {...form}>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -78,15 +107,15 @@ const ChangePasswordUser = () => {
         >
           <FormField
             control={control}
-            name="password"
+            name="facebookLink"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-sm font-medium">
-                  New Password
+                  Facebook Link
                 </FormLabel>
                 <FormControl>
-                  <PasswordInput
-                    id="password"
+                  <Input
+                    id="facebookLink"
                     variant="non-card"
                     className="mt-1 border-gray-300"
                     {...field}
@@ -97,28 +126,6 @@ const ChangePasswordUser = () => {
             )}
           />
 
-          <FormField
-            control={control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium">
-                  Confirm Password
-                </FormLabel>
-                <FormControl>
-                  <PasswordInput
-                    id="confirmPassword"
-                    variant="non-card"
-                    className="mt-1 border-gray-300"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Submit Button */}
           <div className="flex items-center justify-center">
             <Button
               disabled={isSubmitting}
@@ -136,4 +143,4 @@ const ChangePasswordUser = () => {
   );
 };
 
-export default ChangePasswordUser;
+export default AddFacebookLink;

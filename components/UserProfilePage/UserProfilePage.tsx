@@ -22,8 +22,8 @@ const UserProfilePage = ({ userProfile }: Props) => {
 
         {userProfile.company_member_role !== "ADMIN" ? (
           <>
-            <PersonalInformationUser userProfile={userProfile} />
-            <ChangePasswordUser userProfile={userProfile} />
+            <PersonalInformationUser />
+            <ChangePasswordUser />
           </>
         ) : (
           <>

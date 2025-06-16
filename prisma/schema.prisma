@@ -36,6 +36,7 @@ model user_table {
   user_phone_number     String?
   user_profile_picture  String?
   user_bot_field        Boolean @default(false)
+  user_fb_link          String?
 
   company_member_table company_member_table[]
   user_history_log  user_history_log[]

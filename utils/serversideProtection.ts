@@ -114,6 +114,7 @@ export const protectionMemberUser = async (ip?: string) => {
         user_last_name: true,
         user_date_created: true,
         user_profile_picture: true,
+        user_fb_link: true,
         company_member_table: {
           select: {
             company_member_id: true,

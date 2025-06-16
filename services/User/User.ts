@@ -21,6 +21,28 @@ export const getUserSponsor = async (params: { userId: string }) => {
   return result as string;
 };
 
+export const getUserSponsorLink = async () => {
+  const response = await fetch(`/api/v1/user/fb-link/sponsor`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.error || "An error occurred while fetching the earnings."
+    );
+  }
+
+  return result as {
+    user_fb_link: string;
+    user_username: string;
+  };
+};
+
 export const getUserEarnings = async (params: { memberId: string }) => {
   const response = await fetch(`/api/v1/user`, {
     method: "POST",
@@ -178,4 +200,29 @@ export const getHeirarchy = async (params: { allianceMemberId: string }) => {
   }
 
   return result as HeirarchyData[];
+};
+
+export const updateUserFacebookLink = async (params: {
+  userId: string;
+  facebookLink: string;
+}) => {
+  const response = await fetch(`/api/v1/user/` + params.userId + "/fb-link", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fbLink: params.facebookLink,
+    }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.error || "An error occurred while updating the Facebook link."
+    );
+  }
+
+  return result;
 };

@@ -255,6 +255,12 @@ export const ChangePasswordSchema = z
 
 export type ChangePasswordFormValues = z.infer<typeof ChangePasswordSchema>;
 
+export const AddFacebookLinkSchema = z.object({
+  facebookLink: z.string().url("Must be a valid URL"),
+});
+
+export type AddFacebookLinkFormValues = z.infer<typeof AddFacebookLinkSchema>;
+
 export const PromoPackageSchema = (
   maxAmount: number,
   formattedMaxAmount: string

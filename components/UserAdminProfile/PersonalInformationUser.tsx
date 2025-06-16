@@ -2,24 +2,12 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getUserSponsor } from "@/services/User/User";
+import { useRole } from "@/utils/context/roleContext";
 import { useEffect, useState } from "react";
 import ReusableCard from "../ui/card-reusable";
 
-type PersonalInformationLayoutProps = {
-  userProfile: {
-    user_first_name: string;
-    user_last_name: string;
-    user_username: string;
-    company_member_role: string;
-    direct_referral_count: number;
-    indirect_referral_count: number;
-    user_id: string;
-  };
-};
-
-const PersonalInformationLayout = ({
-  userProfile,
-}: PersonalInformationLayoutProps) => {
+const PersonalInformationLayout = () => {
+  const { profile } = useRole();
   const [userSponsor, setUserSponsor] = useState<{
     user_username: string;
   } | null>(null);
@@ -28,7 +16,7 @@ const PersonalInformationLayout = ({
     const fetchUserSponsor = async () => {
       try {
         const userSponsor = await getUserSponsor({
-          userId: userProfile.user_id,
+          userId: profile.user_id,
         });
 
         setUserSponsor({ user_username: userSponsor });
@@ -37,7 +25,7 @@ const PersonalInformationLayout = ({
       }
     };
     fetchUserSponsor();
-  }, [userProfile.user_id]);
+  }, [profile.user_id]);
 
   return (
     <ReusableCard title={"Personal Information"}>
@@ -60,7 +48,7 @@ const PersonalInformationLayout = ({
             id="firstName"
             type="text"
             variant="non-card"
-            value={userProfile.user_first_name || ""}
+            value={profile.user_first_name || ""}
             readOnly
             className="mt-1 border-gray-300"
           />
@@ -72,7 +60,7 @@ const PersonalInformationLayout = ({
             id="lastName"
             variant="non-card"
             type="text"
-            value={userProfile.user_last_name || ""}
+            value={profile.user_last_name || ""}
             readOnly
             className="mt-1 border-gray-300"
           />
@@ -84,7 +72,7 @@ const PersonalInformationLayout = ({
             id="userName"
             variant="non-card"
             type="text"
-            value={userProfile.user_username || ""}
+            value={profile.user_username || ""}
             readOnly
             className="mt-1 border-gray-300"
           />
