@@ -30,6 +30,10 @@ const nextConfig = {
         source: "/api/v1/:path*",
         destination: `${process.env.NODE_ENV === "development" ? "http://localhost:8000" : "https://service-api.omnixglobal.io"}/api/v1/:path*`,
       },
+      {
+        source: "/api/v2/:path*",
+        destination: `${process.env.NODE_ENV === "development" ? "http://localhost:4000" : "https://service-socket.omnixglobal.io"}/api/v2/:path*`,
+      },
     ];
   },
   async headers() {

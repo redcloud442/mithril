@@ -345,3 +345,16 @@ export const getPhilippinesTime = (
   // Return ISO string for database queries
   return resultDate.toISOString();
 };
+
+export const getNotificationIcon = (title: string) => {
+  const titleLower = title.toLowerCase();
+
+  if (titleLower.includes("approval") || titleLower.includes("review"))
+    return "✅";
+  if (titleLower.includes("system") || titleLower.includes("maintenance"))
+    return "⚙️";
+  if (titleLower.includes("message") || titleLower.includes("chat"))
+    return "💬";
+  if (titleLower.includes("update") || titleLower.includes("new")) return "🔔";
+  return "📄";
+};

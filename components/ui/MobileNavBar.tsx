@@ -6,6 +6,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useNotificationCountStore } from "@/store/useNotificationCount";
 import { usePackageChartData } from "@/store/usePackageChartData";
 import { useUserDashboardEarningsStore } from "@/store/useUserDashboardEarnings";
 import { useUserEarningsStore } from "@/store/useUserEarningsStore";
@@ -32,6 +33,7 @@ const MobileNavBar = () => {
   const { setTotalEarnings } = useUserDashboardEarningsStore();
   const { setEarnings } = useUserEarningsStore();
   const { setChartData } = usePackageChartData();
+  const { notificationCount } = useNotificationCountStore();
 
   const handleSignOut = async () => {
     try {
@@ -88,7 +90,7 @@ const MobileNavBar = () => {
               {item.href === "/logout" ? (
                 <div
                   onClick={() => setIsModalOpen(true)}
-                  className="flex flex-col gap-1 items-center font-extrabold text-orange-500"
+                  className="flex flex-col gap-1 items-center font-extrabold text-orange-500 relative"
                 >
                   {item.icon}
                   <span className="text-[10px] text-white font-bold">
@@ -98,8 +100,13 @@ const MobileNavBar = () => {
               ) : (
                 <Link
                   href={item.href}
-                  className="flex flex-col gap-1 items-center font-extrabold text-orange-500"
+                  className="flex flex-col gap-1 items-center font-extrabold text-orange-500 relative"
                 >
+                  {item.href === "/inbox" && notificationCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-[10px] w-4 h-4 flex items-center justify-center">
+                      {notificationCount}
+                    </span>
+                  )}
                   {item.icon}
                   <span className="text-[10px] text-white font-bold">
                     {item.label}

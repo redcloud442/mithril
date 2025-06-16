@@ -7,14 +7,19 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { getDashboard } from "@/services/Dasboard/Member";
-import { getUserWithdrawalToday } from "@/services/User/User";
+import {
+  getNotificationCount,
+  getUserWithdrawalToday,
+} from "@/services/User/User";
 import { useUserLoadingStore } from "@/store/useLoadingStore";
+import { useNotificationCountStore } from "@/store/useNotificationCount";
 import { usePackageChartData } from "@/store/usePackageChartData";
 import { useUserDashboardEarningsStore } from "@/store/useUserDashboardEarnings";
 import { useUserEarningsStore } from "@/store/useUserEarningsStore";
 import { useUserHaveAlreadyWithdraw } from "@/store/useWithdrawalToday";
 import { ROLE } from "@/utils/constant";
 import { useRole } from "@/utils/context/roleContext";
+import { createClientSide } from "@/utils/supabase/client";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,8 +50,10 @@ export default function LayoutContent({ children }: LayoutContentProps) {
   const { setEarnings } = useUserEarningsStore();
   const { setLoading } = useUserLoadingStore();
   const { setChartData } = usePackageChartData();
+  const { setNotificationCount } = useNotificationCountStore();
   const { setIsWithdrawalToday, setCanUserDeposit } =
     useUserHaveAlreadyWithdraw();
+  const supabase = createClientSide();
 
   const isAdmin = useMemo(
     () => teamMemberProfile.company_member_role === ROLE.ADMIN,
@@ -65,11 +72,19 @@ export default function LayoutContent({ children }: LayoutContentProps) {
     try {
       setLoading(true);
 
-      const [dashboardData, { totalEarnings, userEarningsData, actions }] =
-        await Promise.all([
-          getDashboard({ teamMemberId: teamMemberProfile.company_member_id }),
-          getUserWithdrawalToday(),
-        ]);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const [
+        dashboardData,
+        { totalEarnings, userEarningsData, actions },
+        notificationCount,
+      ] = await Promise.all([
+        getDashboard({ teamMemberId: teamMemberProfile.company_member_id }),
+        getUserWithdrawalToday(),
+        getNotificationCount(session?.access_token || ""),
+      ]);
 
       const { canWithdrawReferral, canWithdrawPackage, canUserDeposit } =
         actions;
@@ -81,6 +96,7 @@ export default function LayoutContent({ children }: LayoutContentProps) {
         referral: canWithdrawReferral,
         package: canWithdrawPackage,
       });
+      setNotificationCount(notificationCount.notification_count);
     } catch (e) {
       console.error("Failed to fetch transaction data", e);
     } finally {

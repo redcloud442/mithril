@@ -68,6 +68,27 @@ export const getUserWithdrawalToday = async () => {
   };
 };
 
+export const getNotificationCount = async (token: string) => {
+  const response = await fetch(`/api/v2/notifications/get-count`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.error || "An error occurred while fetching the notification count."
+    );
+  }
+
+  return result as {
+    notification_count: number;
+  };
+};
+
 export const changeUserPassword = async (params: {
   userId: string;
   email: string;
