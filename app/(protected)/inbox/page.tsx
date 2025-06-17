@@ -183,51 +183,54 @@ const Page = () => {
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="text-xs"
-                                    >
-                                      <Eye className="w-3 h-3 mr-1" />
-                                      View Details
-                                    </Button>
-                                  </DialogTrigger>
+                              {notification.notification_image_url.length >
+                                0 && (
+                                <div className="flex items-center gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="text-xs"
+                                      >
+                                        <Eye className="w-3 h-3 mr-1" />
+                                        View Details
+                                      </Button>
+                                    </DialogTrigger>
 
-                                  <DialogContent
-                                    type="earnings"
-                                    className="dark:bg-black dark:border-amber-500 border-2"
-                                  >
-                                    <ScrollArea className="h-[500px]">
-                                      <DialogHeader className="text-white">
-                                        <DialogTitle>
-                                          {notification.notification_title}
-                                        </DialogTitle>
-                                        <DialogDescription>
-                                          {notification.notification_message}
-                                        </DialogDescription>
-                                      </DialogHeader>
-                                      <div className="mt-4 flex flex-col gap-4">
-                                        {notification.notification_image_url.map(
-                                          (url) => (
-                                            <Image
-                                              key={url}
-                                              src={url}
-                                              width={400}
-                                              height={400}
-                                              alt={
-                                                notification.notification_title
-                                              }
-                                            />
-                                          )
-                                        )}
-                                      </div>
-                                    </ScrollArea>
-                                  </DialogContent>
-                                </Dialog>
-                              </div>
+                                    <DialogContent
+                                      type="table"
+                                      className="dark:bg-black dark:border-amber-500 border-2"
+                                    >
+                                      <ScrollArea className="h-[500px]">
+                                        <DialogHeader className="text-white">
+                                          <DialogTitle>
+                                            {notification.notification_title}
+                                          </DialogTitle>
+                                          <DialogDescription>
+                                            {notification.notification_message}
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="mt-4 flex flex-col sm:flex-row justify-center gap-4">
+                                          {notification.notification_image_url.map(
+                                            (url) => (
+                                              <Image
+                                                key={url}
+                                                src={url}
+                                                width={400}
+                                                height={400}
+                                                alt={
+                                                  notification.notification_title
+                                                }
+                                              />
+                                            )
+                                          )}
+                                        </div>
+                                      </ScrollArea>
+                                    </DialogContent>
+                                  </Dialog>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>

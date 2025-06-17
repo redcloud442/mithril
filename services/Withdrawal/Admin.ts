@@ -57,7 +57,17 @@ export const updateWithdrawalStatus = async (params: {
     );
   }
 
-  return response;
+  return result as {
+    company_withdrawal_request_member_id: string;
+    company_withdrawal_request_withdraw_type: string;
+    company_withdrawal_request_amount: number;
+    company_withdrawal_request_bank_name: string;
+    company_withdrawal_request_account: string;
+    company_withdrawal_request_withdraw_amount: number;
+    company_member_requestor: {
+      company_member_user_id: string;
+    };
+  };
 };
 
 export const getAdminWithdrawalReport = async (params: {

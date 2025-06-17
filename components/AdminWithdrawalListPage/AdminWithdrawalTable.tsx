@@ -1,5 +1,6 @@
 "use client";
 
+import FileUpload from "@/components/ui/dropZone";
 import { logError } from "@/services/Error/ErrorLogs";
 import { getAdminWithdrawalRequest } from "@/services/Withdrawal/Admin";
 import { useRole } from "@/utils/context/roleContext";
@@ -55,6 +56,7 @@ type FilterFormValues = {
   statusFilter: string;
   rejectNote: string;
   dateFilter: { start: string; end: string };
+  file: File[] | undefined;
   showHiddenUser: boolean;
   showAllDays: boolean;
 };
@@ -264,6 +266,7 @@ const AdminWithdrawalHistoryTable = () => {
           start: undefined,
           end: undefined,
         },
+        file: undefined,
         rejectNote: "",
         showHiddenUser: false,
         showAllDays: false,
@@ -337,6 +340,7 @@ const AdminWithdrawalHistoryTable = () => {
   };
 
   const rejectNote = watch("rejectNote");
+  const file = watch("file");
   return (
     <>
       <CardAmountAdmin
@@ -379,7 +383,7 @@ const AdminWithdrawalHistoryTable = () => {
                   }
                 }}
               >
-                <DialogContent>
+                <DialogContent type="table" className="w-full max-w-5xl">
                   <DialogHeader>
                     <DialogTitle>
                       {isOpenModal.status.charAt(0).toUpperCase() +
@@ -407,6 +411,26 @@ const AdminWithdrawalHistoryTable = () => {
                       )}
                     />
                   )}
+                  {isOpenModal.status === "APPROVED" && (
+                    <Controller
+                      name="file"
+                      control={control}
+                      rules={{ required: "File is required" }}
+                      render={({ field, fieldState }) => (
+                        <div className="flex flex-col gap-2">
+                          <FileUpload
+                            {...field}
+                            onFileChange={field.onChange}
+                          />
+                          {fieldState.error && (
+                            <span className="text-red-500 text-sm">
+                              {fieldState.error.message}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    />
+                  )}
                   <div className="flex justify-end gap-2 mt-4">
                     <DialogClose asChild>
                       <Button variant="secondary">Cancel</Button>
@@ -417,7 +441,8 @@ const AdminWithdrawalHistoryTable = () => {
                         handleUpdateStatus(
                           isOpenModal.status,
                           isOpenModal.requestId,
-                          rejectNote
+                          rejectNote,
+                          file
                         )
                       }
                     >
