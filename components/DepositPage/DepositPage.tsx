@@ -7,14 +7,14 @@ type DepositLimit = {
 };
 
 const DepositPage = ({ depositLimit }: DepositLimit) => {
-  const isDepositLimited = depositLimit >= 20000;
+  const isDepositLimited = depositLimit >= 50000;
   return (
     <>
       {isDepositLimited ? (
         <DepositLimitOverlay
           isVisible={isDepositLimited}
           depositLimit={depositLimit}
-          maxLimit={20000}
+          maxLimit={50000}
         />
       ) : (
         <ReusableCard

@@ -39,7 +39,7 @@ type DepositLimit = {
 const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
   const supabaseClient = createClientSide();
   const router = useRouter();
-  const isDepositLimited = depositLimit >= 20000;
+  const isDepositLimited = depositLimit >= 50000;
   const [topUpOptions, setTopUpOptions] = useState<merchant_table[]>([]);
   const [selectedMerchant, setSelectedMerchant] =
     useState<merchant_table | null>(null);
@@ -109,7 +109,7 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
         return;
       }
 
-      if (Number(data.amount) + depositLimit > 20000) {
+      if (Number(data.amount) + depositLimit > 50000) {
         toast({
           title: "Please select a lower amount",
           description: "You will exceed the deposit limit.",
@@ -196,7 +196,7 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
           <div className="flex justify-between items-center text-sm mt-2">
             <span className="text-gray-300">Daily Limit:</span>
             <span className="text-red-400 font-bold">
-              ₱{formatNumberLocale(20000)}
+              ₱{formatNumberLocale(50000)}
             </span>
           </div>
         </div>
