@@ -36,7 +36,7 @@ export const ENDED = "ENDED";
 
 export const bankData = [
   // Banks
-  // "BDO Unibank, Inc.",
+  "BDO Unibank, Inc.",
   // "Land Bank of the Philippines (LBP)",
   // "Metropolitan Bank and Trust Company (Metrobank)",
   "Bank of the Philippine Islands (BPI)",
