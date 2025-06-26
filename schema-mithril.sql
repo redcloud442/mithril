@@ -61,6 +61,14 @@ WITH
         WHERE company_withdrawal_request_status = 'APPROVED'
         GROUP BY company_withdrawal_request_member_id
     ),
+    incentive_income AS (
+        SELECT 
+            company_transaction_member_id AS member_id,
+            COALESCE(SUM(company_transaction_amount::DECIMAL), 0) AS total_incentive_income
+        FROM company_schema.company_transaction_table
+        WHERE company_transaction_type = 'INCENTIVE'
+        GROUP BY company_transaction_member_id
+    ),
     direct_referrals AS (
         SELECT 
             package_ally_bounty_member_id AS member_id,
@@ -85,9 +93,11 @@ SELECT
     COALESCE(e.total_earnings, 0) + 
     COALESCE(e.total_amount, 0) + 
     COALESCE(d.direct_referral_amount, 0) + 
-    COALESCE(i.indirect_referral_amount, 0), 
+    COALESCE(i.indirect_referral_amount, 0) + 
+    COALESCE(in.total_incentive_income, 0), 
 0) AS total_earnings,
     COALESCE(w.total_withdrawals - w.total_fee, 0) AS total_withdrawals,
+    COALESCE(in.total_incentive_income, 0) AS total_incentive_income,
     COALESCE(d.direct_referral_amount, 0) AS direct_referral_amount,
     COALESCE(i.indirect_referral_amount, 0) AS indirect_referral_amount,
     COALESCE(e.total_amount + e.total_earnings, 0) AS package_income,

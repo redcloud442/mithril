@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { createPackageConnection } from "@/services/Package/Member";
+import { getRank } from "@/services/Rank/Rank";
 import { usePackageChartData } from "@/store/usePackageChartData";
 import { useUserEarningsStore } from "@/store/useUserEarningsStore";
 import { useRole } from "@/utils/context/roleContext";
@@ -99,6 +100,12 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
         },
         teamMemberId: teamMemberProfile?.company_member_id || "",
       });
+
+      (async () => {
+        await getRank({
+          company_member_id: teamMemberProfile?.company_member_id || "",
+        });
+      })();
 
       reset({ amount: "", packageId: selectedPackage?.package_id || "" });
 
