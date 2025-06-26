@@ -22,7 +22,7 @@ const handleFetchDeposit = async () => {
 };
 
 const page = async () => {
-  const { existingDeposit, depositLimit } = await handleFetchDeposit();
+  const { existingDeposit } = await handleFetchDeposit();
 
   if (existingDeposit) {
     redirect("/dashboard");
@@ -30,7 +30,7 @@ const page = async () => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <DepositPage depositLimit={depositLimit} />
+      <DepositPage />
     </Suspense>
   );
 };

@@ -22,7 +22,7 @@ import { logError } from "@/services/Error/ErrorLogs";
 import { getMerchantOptions } from "@/services/Options/Options";
 import { handleDepositRequest } from "@/services/TopUp/Member";
 import { useUserHaveAlreadyWithdraw } from "@/store/useWithdrawalToday";
-import { escapeFormData, formatNumberLocale } from "@/utils/function";
+import { escapeFormData } from "@/utils/function";
 import { DepositRequestFormValues, depositRequestSchema } from "@/utils/schema";
 import { createClientSide } from "@/utils/supabase/client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,14 +32,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import QRCodeViewer from "./ImageViewer";
-type DepositLimit = {
-  depositLimit: number;
-};
 
-const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
+const DashboardDepositModalDeposit = () => {
   const supabaseClient = createClientSide();
   const router = useRouter();
-  const isDepositLimited = depositLimit >= 50000;
   const [topUpOptions, setTopUpOptions] = useState<merchant_table[]>([]);
   const [selectedMerchant, setSelectedMerchant] =
     useState<merchant_table | null>(null);
@@ -95,24 +91,6 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
         toast({
           title: "Deposit Reached",
           description: "You have already deposited today.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (isDepositLimited) {
-        toast({
-          title: "Deposit Limit Reached",
-          description: "You have exceeded the deposit limit.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (Number(data.amount) + depositLimit > 50000) {
-        toast({
-          title: "Please select a lower amount",
-          description: "You will exceed the deposit limit.",
           variant: "destructive",
         });
         return;
@@ -186,21 +164,6 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
-        <div className="bg-orange-950 rounded-lg p-4 mb-6">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-300">Current Deposits:</span>
-            <span className="text-white font-bold">
-              ₱{formatNumberLocale(depositLimit)}
-            </span>
-          </div>
-          <div className="flex justify-between items-center text-sm mt-2">
-            <span className="text-gray-300">Daily Limit:</span>
-            <span className="text-red-400 font-bold">
-              ₱{formatNumberLocale(50000)}
-            </span>
-          </div>
-        </div>
-
         <FormField
           control={control}
           name="topUpMode"
@@ -361,7 +324,7 @@ const DashboardDepositModalDeposit = ({ depositLimit }: DepositLimit) => {
           <Button
             variant="card"
             className=" font-black text-2xl rounded-full p-5"
-            disabled={isSubmitting || !canUserDeposit || isDepositLimited}
+            disabled={isSubmitting || !canUserDeposit}
             type="submit"
           >
             {isSubmitting ? <Loader2 className="animate-spin" /> : null} Submit
