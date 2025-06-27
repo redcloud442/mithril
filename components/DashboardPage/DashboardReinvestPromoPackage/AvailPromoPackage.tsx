@@ -29,7 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { package_table } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type Props = {
@@ -73,6 +73,15 @@ const AvailPromoPackage = ({
   } = form;
 
   const amount = watch("amount");
+
+  useEffect(() => {
+    if (earnings?.company_package_earnings) {
+      setMaxAmount(
+        (earnings?.company_package_earnings ?? 0) +
+          (earnings?.company_referral_earnings ?? 0)
+      );
+    }
+  }, [earnings]);
 
   const computation = amount
     ? (Number(amount) * Number(selectedPackage?.package_percentage ?? 0)) / 100
