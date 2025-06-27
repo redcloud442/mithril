@@ -263,10 +263,7 @@ export const AddFacebookLinkSchema = z.object({
 
 export type AddFacebookLinkFormValues = z.infer<typeof AddFacebookLinkSchema>;
 
-export const PromoPackageSchema = (
-  maxAmount: number,
-  formattedMaxAmount: string
-) => {
+export const PromoPackageSchema = (maxAmount: number) => {
   return z.object({
     amount: z
       .string()
