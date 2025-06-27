@@ -291,7 +291,10 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
               />
 
               <Label className="font-bold text-center" htmlFor="totalIncome">
-                TOTAL INCOME AFTER {selectedPackage?.packages_days} DAYS
+                TOTAL INCOME AFTER{" "}
+                {selectedPackage?.packages_days === 0
+                  ? "10 PM"
+                  : `${selectedPackage?.packages_days} DAYS`}
               </Label>
               <Input
                 variant="non-card"

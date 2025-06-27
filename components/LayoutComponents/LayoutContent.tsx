@@ -7,10 +7,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { getDashboard } from "@/services/Dasboard/Member";
-import {
-  getNotificationCount,
-  getUserWithdrawalToday,
-} from "@/services/User/User";
+import { getUserWithdrawalToday } from "@/services/User/User";
 import { useUserLoadingStore } from "@/store/useLoadingStore";
 import { useNotificationCountStore } from "@/store/useNotificationCount";
 import { usePackageChartData } from "@/store/usePackageChartData";
@@ -79,11 +76,11 @@ export default function LayoutContent({ children }: LayoutContentProps) {
       const [
         dashboardData,
         { totalEarnings, userEarningsData, actions },
-        notificationCount,
+        // notificationCount,
       ] = await Promise.all([
         getDashboard({ teamMemberId: teamMemberProfile.company_member_id }),
         getUserWithdrawalToday(),
-        getNotificationCount(session?.access_token || ""),
+        // getNotificationCount(session?.access_token || ""),
       ]);
 
       const { canWithdrawReferral, canWithdrawPackage, canUserDeposit } =
@@ -96,7 +93,7 @@ export default function LayoutContent({ children }: LayoutContentProps) {
         referral: canWithdrawReferral,
         package: canWithdrawPackage,
       });
-      setNotificationCount(notificationCount.notification_count);
+      //   setNotificationCount(notificationCount.notification_count);
     } catch (e) {
       console.error("Failed to fetch transaction data", e);
     } finally {
