@@ -271,9 +271,9 @@ export const PromoPackageSchema = (
     amount: z
       .string()
       .trim()
-      .min(3, "Minimum amount is 5000 pesos")
-      .refine((val) => Number(val) >= 5000, {
-        message: "Minimum amount is 5000 pesos",
+      .min(3, "Minimum amount is 3000 pesos")
+      .refine((val) => Number(val) >= 3000, {
+        message: "Minimum amount is 3000 pesos",
       })
       .refine((val) => Number(val) <= Number(maxAmount), {
         message: `Amount cannot exceed ${maxAmount}`,
