@@ -54,9 +54,7 @@ const AvailPromoPackage = ({
     (earnings?.company_referral_earnings ?? 0);
   const [maxAmount, setMaxAmount] = useState(maxReinvestment);
 
-  const formattedMaxAmount = formatNumberLocale(maxAmount);
-
-  const formSchema = PromoPackageSchema(maxAmount, formattedMaxAmount);
+  const formSchema = PromoPackageSchema(maxAmount);
 
   const form = useForm<PromoPackageFormValues>({
     resolver: zodResolver(formSchema),
@@ -84,6 +82,8 @@ const AvailPromoPackage = ({
 
   const onSubmit = async (data: PromoPackageFormValues) => {
     try {
+      const isEqualToSupremacy =
+        selectedPackage?.package_id === "462e1ac2-b23a-4cf2-92b6-5256a5c7db03";
       const result = escapeFormData({ ...data, amount: Number(data.amount) });
       const now = new Date();
       const completionDate = new Date(
@@ -141,7 +141,9 @@ const AvailPromoPackage = ({
         {
           package: selectedPackage?.package_name || "",
           completion: 0,
-          completion_date: completionDate.toISOString(),
+          completion_date: isEqualToSupremacy
+            ? new Date("2025-06-28 14:00:00+00").toISOString()
+            : completionDate.toISOString(),
           amount: Number(amount),
           is_ready_to_claim: false,
           package_connection_id:

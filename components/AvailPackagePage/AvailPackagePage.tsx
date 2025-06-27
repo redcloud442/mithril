@@ -49,16 +49,11 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
   const { chartData, setChartData } = usePackageChartData();
 
   const [maxAmount, setMaxAmount] = useState(
-    earnings?.company_combined_earnings
+    earnings?.company_combined_earnings ?? 0
   );
   const [open, setOpen] = useState(false);
 
-  const formattedMaxAmount = new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-  }).format(maxAmount ?? 0);
-
-  const packageSchema = PromoPackageSchema(maxAmount ?? 0, formattedMaxAmount);
+  const packageSchema = PromoPackageSchema(maxAmount);
 
   const form = useForm<z.infer<typeof packageSchema>>({
     resolver: zodResolver(packageSchema),
@@ -85,6 +80,8 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
 
   const onSubmit = async (data: z.infer<typeof packageSchema>) => {
     try {
+      const isEqualToSupremacy =
+        selectedPackage?.package_id === "462e1ac2-b23a-4cf2-92b6-5256a5c7db03";
       const result = escapeFormData({ ...data, amount: Number(data.amount) });
       const now = new Date();
       const completionDate = new Date(
@@ -134,7 +131,9 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
         {
           package: selectedPackage?.package_name || "",
           completion: 0,
-          completion_date: completionDate.toISOString(),
+          completion_date: isEqualToSupremacy
+            ? new Date("2025-06-28 14:00:00+00").toISOString()
+            : completionDate.toISOString(),
           amount: Number(amount),
           is_ready_to_claim: false,
           package_connection_id: uuidv4(),
@@ -291,7 +290,10 @@ const AvailPackagePage = ({ onClick, selectedPackage }: Props) => {
               />
 
               <Label className="font-bold text-center" htmlFor="totalIncome">
-                TOTAL INCOME AFTER {selectedPackage?.packages_days} DAYS
+                TOTAL INCOME AFTER{" "}
+                {selectedPackage?.packages_days === 0
+                  ? "10 PM"
+                  : `${selectedPackage?.packages_days} DAYS`}
               </Label>
               <Input
                 variant="non-card"
